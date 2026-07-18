@@ -30,7 +30,7 @@ function DoodleArrow({ className = "" }) {
     <svg viewBox="0 0 110 130" fill="none" className={`doodle-arrow ${className}`} aria-hidden="true">
       <path
         className="doodle-draw-scroll"
-        d="M96 6c-8 34-24 62-56 82-8 5-16 9-26 12"
+        d="M14 6c8 34 24 62 56 82 8 5 16 9 26 12"
         stroke="#c4633a"
         strokeWidth="2.5"
         strokeLinecap="round"
@@ -38,7 +38,7 @@ function DoodleArrow({ className = "" }) {
       />
       <path
         className="doodle-draw-scroll"
-        d="M28 88l-16 14 20 6"
+        d="M82 88l16 14-20 6"
         stroke="#c4633a"
         strokeWidth="2.5"
         strokeLinecap="round"
@@ -98,7 +98,7 @@ function ProfileMock() {
       {/* hand-drawn annotation, GitHub-style */}
       <div className="hidden lg:block absolute -left-40 -top-10 w-32 text-left">
         <span className="text-sm text-mute italic">this could be you —</span>
-        <DoodleArrow className="w-20 mt-2 ml-6" />
+        <DoodleArrow className="w-20 mt-2 ml-10" />
       </div>
       <div className="bg-card border border-line rounded-2xl p-6 md:p-8 text-left shadow-2xl shadow-black/50">
         <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -182,25 +182,20 @@ export default function Landing() {
         .from(".hero-line", { yPercent: 115, duration: 1, stagger: 0.14 }, 0.2)
         .from(".hero-sub", { y: 24, opacity: 0, duration: 0.7 }, "-=0.55")
         .from(".hero-cta", { y: 18, opacity: 0, duration: 0.6, stagger: 0.08 }, "-=0.45")
-        .fromTo(
+        .to(
           ".doodle-draw",
-          { strokeDasharray: 1, strokeDashoffset: 1 },
           { strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut" },
           "-=0.5"
         );
 
       // doodles that draw themselves in on scroll
       gsap.utils.toArray(".doodle-draw-scroll").forEach((el) => {
-        gsap.fromTo(
-          el,
-          { strokeDasharray: 1, strokeDashoffset: 1 },
-          {
-            strokeDashoffset: 0,
-            duration: 1,
-            ease: "power2.inOut",
-            scrollTrigger: { trigger: el, start: "top 85%" },
-          }
-        );
+        gsap.to(el, {
+          strokeDashoffset: 0,
+          duration: 1,
+          ease: "power2.inOut",
+          scrollTrigger: { trigger: el, start: "top 85%" },
+        });
       });
 
       // generic scroll reveals
