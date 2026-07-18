@@ -70,9 +70,12 @@ export default function AuthLayout({ title, subtitle, footer, variant = "login",
   const p = PANELS[variant] || PANELS.login;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10 md:py-14 grid lg:grid-cols-2 gap-8 items-stretch">
+    // navbar is h-16 (4rem) — fill the rest of the viewport and center
+    // the split vertically so panel and form share a midline
+    <div className="min-h-[calc(100vh-4rem)] flex items-center">
+      <div className="max-w-6xl w-full mx-auto px-4 py-10 grid lg:grid-cols-2 gap-8 lg:gap-14 items-stretch">
       {/* image-style brand panel */}
-      <div className="hidden lg:flex relative overflow-hidden flex-col justify-between rounded-3xl border border-line bg-gradient-to-br from-[#26140c] via-[#150f0b] to-[#0a0a0a] p-10 min-h-[36rem]">
+      <div className="hidden lg:flex relative overflow-hidden flex-col justify-between rounded-3xl border border-line bg-gradient-to-br from-[#26140c] via-[#150f0b] to-[#0a0a0a] p-10 min-h-[32rem]">
         {/* subtle dot texture + glow, like a crafted illustration */}
         <div
           className="absolute inset-0 pointer-events-none"
@@ -151,6 +154,7 @@ export default function AuthLayout({ title, subtitle, footer, variant = "login",
         </div>
 
         <p className="text-sm text-mute mt-6 text-center">{footer}</p>
+      </div>
       </div>
     </div>
   );
