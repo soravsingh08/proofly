@@ -35,32 +35,17 @@ body {
   .page-fade { animation: none; }
 }
 
-/* footer marquee — two identical tracks drift left; when one exits,
-   the twin is already in place, so the loop is seamless */
-.marquee {
-  display: flex;
-  overflow: hidden;
+/* footer heatmap strip — each cell breathes on its own offset,
+   like activity being logged somewhere right now */
+.footer-cell {
+  animation: cellBreathe 5s ease-in-out infinite;
 }
-.marquee-track {
-  flex-shrink: 0;
-  min-width: 100%;
-  animation: marquee 30s linear infinite;
-}
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
-}
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
+@keyframes cellBreathe {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track { animation: none; }
-}
-
-/* hollow display type for the marquee's alternating phrase */
-.text-outline {
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(241, 241, 239, 0.28);
+  .footer-cell { animation: none; }
 }
 
 /* soft terracotta spotlight behind hero sections — many gentle

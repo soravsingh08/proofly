@@ -573,42 +573,77 @@ export default function Landing() {
 
       </div>
 
-      {/* ============ footer — marquee band + compact link row ============ */}
+      {/* ============ footer — brand, links, living heatmap strip ============ */}
       <footer className="border-t border-line mt-8">
-        {/* endless drift; duplicated track loops seamlessly, pauses on hover */}
-        <div className="marquee border-b border-line py-7" aria-hidden="true">
-          {[0, 1].map((t) => (
-            <div
-              key={t}
-              className="marquee-track flex items-center gap-10 pr-10 whitespace-nowrap"
-            >
-              {Array.from({ length: 3 }).map((_, i) => (
-                <span
-                  key={i}
-                  className="flex items-center gap-10 text-5xl md:text-6xl font-semibold tracking-tight leading-none"
-                >
-                  <span className="text-ink">PROOFLY</span>
-                  <span className="text-brand text-3xl md:text-4xl">✳</span>
-                  <span className="text-outline">PROOF OVER PROMISES</span>
-                  <span className="text-brand text-3xl md:text-4xl">✳</span>
-                </span>
-              ))}
+        <div className="max-w-6xl mx-auto px-4 py-14 flex flex-col md:flex-row justify-between gap-10">
+          <div className="max-w-xs">
+            <div className="flex items-center gap-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="8.5"
+                  stroke="#c4633a"
+                  strokeWidth="5"
+                  strokeDasharray="40 14"
+                  strokeLinecap="round"
+                  transform="rotate(-45 12 12)"
+                />
+              </svg>
+              <span className="font-semibold text-lg tracking-tight">Proofly</span>
             </div>
-          ))}
+            <p className="text-sm text-mute mt-4 leading-relaxed">
+              The contribution graph for every profession. Log real work, keep
+              the streak, and let recruiters see proof — not promises.
+            </p>
+          </div>
+          <div className="flex gap-16 sm:gap-24">
+            <div>
+              <div className="text-[11px] uppercase tracking-[0.2em] text-mute mb-4">
+                Product
+              </div>
+              <div className="space-y-2.5 text-sm">
+                <Link to="/leaderboard" className="block text-ink/80 hover:text-ink transition">Leaderboard</Link>
+                <Link to="/u/arjun" className="block text-ink/80 hover:text-ink transition">Live profile</Link>
+                <Link to="/u/arjun/resume" className="block text-ink/80 hover:text-ink transition">Résumé</Link>
+              </div>
+            </div>
+            <div>
+              <div className="text-[11px] uppercase tracking-[0.2em] text-mute mb-4">
+                Get started
+              </div>
+              <div className="space-y-2.5 text-sm">
+                <Link to="/register" className="block text-ink/80 hover:text-ink transition">Sign up</Link>
+                <Link to="/login" className="block text-ink/80 hover:text-ink transition">Login</Link>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-mute">
-          <span>Consistency you can't fake — built in 24 hours.</span>
-          <div className="flex items-center gap-6">
-            <Link to="/leaderboard" className="hover:text-ink transition">
-              Leaderboard
-            </Link>
-            <Link to="/login" className="hover:text-ink transition">
-              Login
-            </Link>
-            <Link to="/register" className="hover:text-ink transition">
-              Sign up
-            </Link>
-            <span>© 2026</span>
+
+        {/* a strip of the product itself — cells breathing on their own clocks */}
+        <div
+          aria-hidden="true"
+          className="flex justify-center gap-[3px] overflow-hidden px-1"
+          style={{ "--accent": "#c4633a" }}
+        >
+          {Array.from({ length: 140 }, (_, i) => {
+            const r = Math.sin(i * 7.13) * 10000;
+            const v = r - Math.floor(r);
+            const level = v < 0.45 ? 0 : (Math.ceil(v * 8) % 4) + 1;
+            return (
+              <div
+                key={i}
+                className={`hm-cell hm-${level} footer-cell shrink-0`}
+                style={{ width: 9, height: 9, animationDelay: `${(v * 5).toFixed(2)}s` }}
+              />
+            );
+          })}
+        </div>
+
+        <div className="border-t border-line mt-6">
+          <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-mute">
+            <span>© 2026 Proofly — consistency you can't fake.</span>
+            <span>Built in 24 hours</span>
           </div>
         </div>
       </footer>
