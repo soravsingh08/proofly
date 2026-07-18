@@ -16,6 +16,7 @@ import goalRoutes from "./routes/goals.js";
 import integrationRoutes from "./routes/integrations.js";
 import adminRoutes from "./routes/admin.js";
 import exportRoutes from "./routes/export.js";
+import connectionRoutes from "./routes/connections.js";
 import aiRoutes from "./routes/ai.js";
 import metaRoutes from "./routes/meta.js";
 import { ROLES } from "./config/roles.js";
@@ -57,6 +58,7 @@ app.use("/api/goals", goalRoutes);
 app.use("/api/integrations", integrationRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/export", exportRoutes);
+app.use("/api/connections", connectionRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/meta", metaRoutes);
 

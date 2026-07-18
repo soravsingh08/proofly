@@ -2,7 +2,7 @@ import { Router } from "express";
 import Contribution from "../models/Contribution.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { sanitizeMetrics } from "../config/roles.js";
-import { isAllowedLogDate } from "../services/dates.js";
+import { isAllowedLogDate, isValidDateStr } from "../services/dates.js";
 
 const router = Router();
 router.use(requireAuth, requireRole);
@@ -45,9 +45,12 @@ router.post("/", async (req, res) => {
   }
 });
 
+// ?date=yyyy-mm-dd filters to one day (log history filter)
 router.get("/", async (req, res) => {
   const limit = Math.min(Number(req.query.limit) || 30, 100);
-  const contributions = await Contribution.find({ userId: req.user._id })
+  const filter = { userId: req.user._id };
+  if (isValidDateStr(req.query.date)) filter.date = req.query.date;
+  const contributions = await Contribution.find(filter)
     .sort({ date: -1, createdAt: -1 })
     .limit(limit);
   res.json({ contributions });

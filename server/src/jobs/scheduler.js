@@ -1,20 +1,21 @@
 import cron from "node-cron";
 import User from "../models/User.js";
-import { syncGithubUser } from "../services/github.js";
+import Connection from "../models/Connection.js";
+import { syncConnection } from "../services/connections.js";
 import { dailyTotals, computeStreaks, summaryFor } from "../services/stats.js";
 import { mailEnabled, sendMail } from "../services/mailer.js";
 import { serverToday } from "../services/dates.js";
 
 export function startJobs() {
-  // 03:00 daily — refresh every connected GitHub profile so rung 3
-  // stays fresh without anyone clicking sync
-  cron.schedule("0 3 * * *", async () => {
-    const users = await User.find({ role: "developer", githubUsername: { $ne: "" } });
-    for (const u of users) {
+  // 03:30 daily — refresh every connected repo/sheet/channel
+  cron.schedule("30 3 * * *", async () => {
+    const connections = await Connection.find().populate("userId");
+    for (const conn of connections) {
+      if (!conn.userId) continue;
       try {
-        await syncGithubUser(u);
+        await syncConnection(conn, conn.userId);
       } catch (err) {
-        console.error(`github sync failed for ${u.username}:`, err.message);
+        console.error(`connection sync failed (${conn.label}):`, err.message);
       }
     }
   });

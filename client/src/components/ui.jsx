@@ -65,6 +65,18 @@ export function VerificationBadge({ level }) {
   );
 }
 
+// drifting background light for authed pages — pairs with the
+// .ambient-glow styles in index.css
+export function AmbientGlow() {
+  return (
+    <div className="ambient-glow" aria-hidden="true">
+      <div className="glow-blob glow-a" />
+      <div className="glow-blob glow-b" />
+      <div className="glow-blob glow-c" />
+    </div>
+  );
+}
+
 export function Spinner({ label = "Loading…" }) {
   return (
     <div className="flex flex-col items-center justify-center py-20 gap-3 text-mute">

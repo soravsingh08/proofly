@@ -24,8 +24,16 @@ const contributionSchema = new mongoose.Schema(
     },
     source: {
       type: String,
-      enum: ["manual", "excel_import", "github_sync", "seed", "meta_api"],
+      enum: ["manual", "excel_import", "github_sync", "seed", "meta_api", "connection"],
       default: "manual",
+    },
+    // set when the entry came from a synced connection — lets a
+    // re-sync or disconnect replace exactly its own rows
+    connectionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Connection",
+      default: null,
+      index: true,
     },
   },
   { timestamps: true }
