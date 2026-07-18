@@ -7,10 +7,7 @@
 // ============================================================
 import { ROLES } from "../config/roles.js";
 import { SITE } from "../config/site.js";
-import { aiAvailable } from "./aiSummary.js";
-
-const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
-const MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
+import { aiAvailable, LLM_URL, LLM_MODEL } from "./aiSummary.js";
 
 const roleLabels = Object.values(ROLES).map((r) => r.label).join(", ");
 
@@ -149,13 +146,13 @@ async function llmAnswer(message, history) {
     { role: "user", content: message },
   ];
 
-  const res = await fetch(OPENAI_URL, {
+  const res = await fetch(LLM_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
     },
-    body: JSON.stringify({ model: MODEL, messages, temperature: 0.4, max_tokens: 220 }),
+    body: JSON.stringify({ model: LLM_MODEL, messages, temperature: 0.4, max_tokens: 220 }),
   });
   if (!res.ok) throw new Error(`assistant LLM failed (${res.status})`);
   const data = await res.json();

@@ -6,8 +6,11 @@
 // ============================================================
 import { getRole } from "../config/roles.js";
 
-const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
-const MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
+// Any OpenAI-compatible provider works (Groq, Gemini, OpenRouter…):
+// point OPENAI_BASE_URL at it and set OPENAI_MODEL to one of its models.
+const BASE_URL = (process.env.OPENAI_BASE_URL || "https://api.openai.com/v1").replace(/\/+$/, "");
+export const LLM_URL = `${BASE_URL}/chat/completions`;
+export const LLM_MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
 
 export function aiAvailable() {
   return Boolean(process.env.OPENAI_API_KEY);
@@ -86,14 +89,14 @@ export function fallbackSummary(user, summary) {
 }
 
 export async function generateSummary(user, summary, recent) {
-  const res = await fetch(OPENAI_URL, {
+  const res = await fetch(LLM_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
-      model: MODEL,
+      model: LLM_MODEL,
       messages: [{ role: "user", content: buildPrompt(user, summary, recent) }],
       response_format: { type: "json_object" },
       temperature: 0.6,
