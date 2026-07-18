@@ -327,16 +327,6 @@ export default function Landing() {
           }),
       });
 
-      // footer wordmark — letters rise out of the baseline mask
-      gsap.set(".footer-letter", { yPercent: 115 });
-      gsap.to(".footer-letter", {
-        yPercent: 0,
-        duration: 1,
-        ease: "power4.out",
-        stagger: 0.055,
-        scrollTrigger: { trigger: ".footer-brand", start: "top 90%", once: true },
-      });
-
       // stats count up when the band scrolls in
       gsap.utils.toArray(".stat").forEach((el) => {
         const target = +el.dataset.n;
@@ -583,9 +573,30 @@ export default function Landing() {
 
       </div>
 
-      {/* ============ footer — awwwards-style giant wordmark ============ */}
-      <footer className="footer-brand border-t border-line mt-8 overflow-hidden">
-        <div className="max-w-6xl mx-auto px-4 pt-10 pb-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-mute">
+      {/* ============ footer — marquee band + compact link row ============ */}
+      <footer className="border-t border-line mt-8">
+        {/* endless drift; duplicated track loops seamlessly, pauses on hover */}
+        <div className="marquee border-b border-line py-7" aria-hidden="true">
+          {[0, 1].map((t) => (
+            <div
+              key={t}
+              className="marquee-track flex items-center gap-10 pr-10 whitespace-nowrap"
+            >
+              {Array.from({ length: 3 }).map((_, i) => (
+                <span
+                  key={i}
+                  className="flex items-center gap-10 text-5xl md:text-6xl font-semibold tracking-tight leading-none"
+                >
+                  <span className="text-ink">PROOFLY</span>
+                  <span className="text-brand text-3xl md:text-4xl">✳</span>
+                  <span className="text-outline">PROOF OVER PROMISES</span>
+                  <span className="text-brand text-3xl md:text-4xl">✳</span>
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-mute">
           <span>Consistency you can't fake — built in 24 hours.</span>
           <div className="flex items-center gap-6">
             <Link to="/leaderboard" className="hover:text-ink transition">
@@ -599,22 +610,6 @@ export default function Landing() {
             </Link>
             <span>© 2026</span>
           </div>
-        </div>
-        {/* letters rise out of a baseline mask; slight crop below the fold */}
-        <div
-          aria-hidden="true"
-          className="select-none whitespace-nowrap text-center font-semibold tracking-[-0.05em] leading-[0.8] text-[clamp(4rem,19.5vw,21rem)] -mb-[0.14em]"
-        >
-          {"PROOFLY".split("").map((ch, i) => (
-            <span
-              key={i}
-              className="inline-block overflow-hidden align-bottom pb-[0.08em] -mb-[0.08em]"
-            >
-              <span className="footer-letter inline-block text-ink/90 hover:text-brand transition-colors duration-300">
-                {ch}
-              </span>
-            </span>
-          ))}
         </div>
       </footer>
     </div>
