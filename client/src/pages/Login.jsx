@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
-import { Button, Card, Input } from "../components/ui";
+import { Button, Card, Input, PasswordInput } from "../components/ui";
 
 export default function Login() {
   const { login } = useAuth();
@@ -42,9 +42,8 @@ export default function Login() {
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
-          <Input
+          <PasswordInput
             label="Password"
-            type="password"
             required
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}

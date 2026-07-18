@@ -1,0 +1,132 @@
+import { getRole } from "../config/roles.js";
+import { serverToday } from "./dates.js";
+
+const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" };
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ESC[c]);
+
+const VERIFICATION_LABELS = {
+  self_reported: "Self-reported",
+  evidence: "📎 Evidence-backed",
+  imported: "✓ Imported",
+};
+
+// Self-contained proof-of-work report: one HTML file the user can
+// attach to an application, email to a recruiter, or print to PDF.
+// No external assets — it renders identically offline forever.
+export function buildProfileHtml({ user, summary, badges, cardSvg, contributions, verificationCounts }) {
+  const role = getRole(user.role);
+  const metricLabel = {};
+  for (const m of role.metrics) metricLabel[m.key] = m.label;
+
+  const verifiedPct = summary.totalContributions
+    ? Math.round((summary.verifiedCount / summary.totalContributions) * 100)
+    : 0;
+
+  const statBoxes = [
+    ["🔥 " + summary.currentStreak, "day streak"],
+    [summary.longestStreak, "longest streak"],
+    [summary.activeDays, "active days"],
+    [summary.score, "score"],
+    [summary.totalContributions, "entries logged"],
+    [verifiedPct + "%", "verified"],
+  ]
+    .map(([v, l]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`)
+    .join("");
+
+  const badgeItems = badges
+    .map((b) => `<div class="badge" title="${esc(b.desc)}">${b.icon} ${esc(b.label)}</div>`)
+    .join("");
+
+  const metricRows = role.metrics
+    .map((m) => `<tr><td>${esc(m.label)}</td><td>${summary.metricTotals[m.key] ?? 0}</td></tr>`)
+    .join("");
+
+  const verificationRows = Object.entries(VERIFICATION_LABELS)
+    .filter(([k]) => verificationCounts[k])
+    .map(([k, label]) => `<tr><td>${label}</td><td>${verificationCounts[k]}</td></tr>`)
+    .join("");
+
+  const logRows = contributions
+    .map((c) => {
+      const metrics = Object.entries(c.metrics)
+        .map(([k, v]) => `${metricLabel[k] || k}: ${v}`)
+        .join(", ");
+      const proof = c.evidenceUrl
+        ? `<a href="${esc(c.evidenceUrl)}">view proof</a>`
+        : "—";
+      return `<tr><td>${c.date}</td><td>${esc(metrics)}</td><td>${VERIFICATION_LABELS[c.verification]}</td><td>${proof}</td><td>${esc(c.note || "")}</td></tr>`;
+    })
+    .join("\n");
+
+  const liveUrl = `${process.env.CLIENT_URL || "http://localhost:5173"}/u/${user.username}`;
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>${esc(user.name)} — Proofly proof-of-work</title>
+<style>
+  body { margin: 0; padding: 40px 24px; background: #0d1117; color: #e6edf3;
+         font: 14px/1.5 -apple-system, "Segoe UI", Ubuntu, sans-serif; }
+  .page { max-width: 720px; margin: 0 auto; }
+  h1 { margin: 0; font-size: 26px; }
+  h2 { font-size: 15px; margin: 32px 0 10px; color: #8b949e;
+       text-transform: uppercase; letter-spacing: 0.05em; }
+  .sub { color: #8b949e; margin: 4px 0 0; }
+  .sub .role { color: ${role.color}; font-weight: 600; }
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+  .stat { flex: 1 1 100px; background: #161b22; border: 1px solid #30363d;
+          border-radius: 10px; padding: 12px; text-align: center; }
+  .stat b { display: block; font-size: 20px; }
+  .stat span { font-size: 11px; color: #8b949e; }
+  .card svg { max-width: 100%; height: auto; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; }
+  .badge { background: #161b22; border: 1px solid #30363d; border-radius: 999px;
+           padding: 6px 12px; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid #21262d;
+           font-size: 13px; vertical-align: top; }
+  th { color: #8b949e; font-weight: 600; }
+  a { color: #58a6ff; }
+  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #21262d;
+           color: #8b949e; font-size: 12px; }
+  @media print {
+    body { background: #fff; color: #111; padding: 0; }
+    .stat, .badge { background: #f6f8fa; border-color: #d0d7de; }
+    th, td { border-color: #d0d7de; }
+    footer { border-color: #d0d7de; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>${esc(user.name)}</h1>
+  <p class="sub">@${esc(user.username)} · <span class="role">${esc(role.label)}</span>${user.headline ? " · " + esc(user.headline) : ""}</p>
+
+  <div class="stats">${statBoxes}</div>
+
+  <h2>Contribution graph — last 26 weeks</h2>
+  <div class="card">${cardSvg}</div>
+
+  ${badges.length ? `<h2>Achievements</h2><div class="badges">${badgeItems}</div>` : ""}
+
+  <h2>Lifetime numbers</h2>
+  <table><tr><th>Metric</th><th>Total</th></tr>${metricRows}</table>
+
+  <h2>Verification</h2>
+  <table><tr><th>Level</th><th>Entries</th></tr>${verificationRows}</table>
+
+  <h2>Recent work log</h2>
+  <table>
+    <tr><th>Date</th><th>Work</th><th>Verification</th><th>Proof</th><th>Note</th></tr>
+    ${logRows}
+  </table>
+
+  <footer>
+    Generated by Proofly on ${serverToday()} · every number on this report can be
+    verified live at <a href="${esc(liveUrl)}">${esc(liveUrl)}</a> — consistency can't be faked.
+  </footer>
+</div>
+</body>
+</html>`;
+}

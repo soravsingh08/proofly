@@ -1,4 +1,5 @@
 // Small shared UI atoms — keeps pages lean and consistent.
+import { useState } from "react";
 import { formatMetric } from "../config/roles";
 
 export function Card({ children, className = "" }) {
@@ -98,6 +99,34 @@ export function Input({ label, error, ...props }) {
         }`}
         {...props}
       />
+      {error && <span className="block text-xs text-red-400 mt-1">{error}</span>}
+    </label>
+  );
+}
+
+export function PasswordInput({ label, error, ...props }) {
+  const [show, setShow] = useState(false);
+  return (
+    <label className="block">
+      {label && <span className="block text-xs text-mute mb-1.5">{label}</span>}
+      <div className="relative">
+        <input
+          type={show ? "text" : "password"}
+          className={`w-full bg-bg border rounded-lg px-3 py-2 pr-10 text-sm outline-none focus:border-brand transition ${
+            error ? "border-red-500" : "border-line"
+          }`}
+          {...props}
+        />
+        <button
+          type="button"
+          tabIndex={-1}
+          onClick={() => setShow(!show)}
+          aria-label={show ? "Hide password" : "Show password"}
+          className="absolute inset-y-0 right-0 px-3 text-mute hover:text-ink transition"
+        >
+          {show ? "🙈" : "👁️"}
+        </button>
+      </div>
       {error && <span className="block text-xs text-red-400 mt-1">{error}</span>}
     </label>
   );

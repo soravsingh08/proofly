@@ -19,6 +19,27 @@ export async function dailyTotals(userId) {
   return map;
 }
 
+// Same thing for many users in ONE query — leaderboard/search
+// would otherwise fire an aggregation per user.
+export async function totalsByUser(userIds) {
+  const rows = await Contribution.aggregate([
+    { $match: { userId: { $in: userIds } } },
+    {
+      $group: {
+        _id: { u: "$userId", d: "$date" },
+        total: { $sum: "$weightedTotal" },
+      },
+    },
+  ]);
+  const byUser = new Map();
+  for (const r of rows) {
+    const key = String(r._id.u);
+    if (!byUser.has(key)) byUser.set(key, new Map());
+    byUser.get(key).set(r._id.d, r.total);
+  }
+  return byUser;
+}
+
 // ---- heatmap: percentile-based levels (edge case C2) ----
 // level 0: none, 1: >0, 2: >=p50, 3: >=p75, 4: >=p90 of the
 // user's own nonzero days — every active user gets a rich graph.
@@ -48,8 +69,11 @@ export function heatmapPayload(totalsMap) {
 // ---- streaks (edge case D1) ----
 // Current streak: consecutive days ending today OR yesterday
 // (yesterday keeps it alive if they haven't logged yet today).
-export function computeStreaks(totalsMap) {
-  const days = [...totalsMap.keys()].sort();
+// Streak-freeze days bridge gaps but add no activity.
+export function computeStreaks(totalsMap, freezes = []) {
+  const daySet = new Set(totalsMap.keys());
+  for (const f of freezes) daySet.add(f);
+  const days = [...daySet].sort();
   if (days.length === 0) return { current: 0, longest: 0 };
 
   let longest = 1, run = 1;
@@ -60,7 +84,6 @@ export function computeStreaks(totalsMap) {
 
   const today = serverToday();
   const yesterday = addDays(today, -1);
-  const daySet = new Set(days);
   let anchor = null;
   if (daySet.has(today)) anchor = today;
   else if (daySet.has(yesterday)) anchor = yesterday;
@@ -82,26 +105,34 @@ export function computeScore({ activeDays, weightedSum, currentStreak }) {
 }
 
 // ---- full summary for dashboard + public profile ----
-export async function summaryFor(user) {
-  const totals = await dailyTotals(user._id);
-  const streaks = computeStreaks(totals);
+// pass precomputed totals to avoid a duplicate aggregation
+export async function summaryFor(user, totals) {
+  totals = totals || (await dailyTotals(user._id));
+  const streaks = computeStreaks(totals, user.streakFreezes);
   const activeDays = totals.size;
   let weightedSum = 0;
   for (const v of totals.values()) weightedSum += v;
 
   // per-metric lifetime totals
   const role = getRole(user.role);
-  const metricAgg = await Contribution.aggregate([
-    { $match: { userId: user._id } },
-    { $project: { metrics: { $objectToArray: "$metrics" } } },
-    { $unwind: "$metrics" },
-    {
-      $group: {
-        _id: "$metrics.k",
-        total: { $sum: "$metrics.v" },
-        count: { $sum: 1 },
+  const [metricAgg, totalContributions, verifiedCount] = await Promise.all([
+    Contribution.aggregate([
+      { $match: { userId: user._id } },
+      { $project: { metrics: { $objectToArray: "$metrics" } } },
+      { $unwind: "$metrics" },
+      {
+        $group: {
+          _id: "$metrics.k",
+          total: { $sum: "$metrics.v" },
+          count: { $sum: 1 },
+        },
       },
-    },
+    ]),
+    Contribution.countDocuments({ userId: user._id }),
+    Contribution.countDocuments({
+      userId: user._id,
+      verification: { $ne: "self_reported" },
+    }),
   ]);
   // counts/currency accumulate; ratios & percents AVERAGE — a
   // lifetime "254x ROAS" sum would be nonsense
@@ -121,6 +152,7 @@ export async function summaryFor(user) {
     longestStreak: streaks.longest,
     score: computeScore({ activeDays, weightedSum, currentStreak: streaks.current }),
     metricTotals,
-    totalContributions: await Contribution.countDocuments({ userId: user._id }),
+    totalContributions,
+    verifiedCount,
   };
 }
