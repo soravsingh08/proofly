@@ -53,6 +53,38 @@ Write JSON with exactly these keys:
 Return ONLY the JSON object.`;
 }
 
+// Deterministic summary built from the same logged data — used when
+// the LLM is unconfigured or out of quota so the button never 502s.
+// Same shape as generateSummary; every number is real.
+export function fallbackSummary(user, summary) {
+  const role = getRole(user.role);
+  const topMetrics = role.metrics
+    .filter((m) => m.weight > 0 && (summary.metricTotals[m.key] ?? 0) > 0)
+    .sort((a, b) => (summary.metricTotals[b.key] ?? 0) - (summary.metricTotals[a.key] ?? 0))
+    .slice(0, 2);
+
+  const metricPhrase = topMetrics
+    .map((m) => `${summary.metricTotals[m.key]} ${m.label.toLowerCase()}`)
+    .join(" and ");
+
+  const text =
+    `${user.name} is a ${role.label} with ${summary.activeDays} active days of logged, ` +
+    `verifiable work on Proofly — currently on a ${summary.currentStreak}-day streak ` +
+    `(longest: ${summary.longestStreak} days). Across ${summary.totalContributions} logged ` +
+    `contributions they have recorded ${metricPhrase || "consistent daily output"}. ` +
+    `That day-in, day-out consistency is tracked on a public heatmap and can't be back-filled or faked.`;
+
+  const highlights = [
+    `${summary.activeDays} active days of logged work`,
+    `${summary.longestStreak}-day longest streak`,
+    topMetrics[0]
+      ? `${summary.metricTotals[topMetrics[0].key]} ${topMetrics[0].label.toLowerCase()} logged`
+      : `${summary.totalContributions} total contributions`,
+  ];
+
+  return { text, highlights };
+}
+
 export async function generateSummary(user, summary, recent) {
   const res = await fetch(OPENAI_URL, {
     method: "POST",

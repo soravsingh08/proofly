@@ -30,6 +30,9 @@ function publicUser(u) {
     githubUsername: u.githubUsername,
     emailReminders: u.emailReminders,
     isAdmin: u.isAdmin,
+    metaConnected: Boolean(u.metaConnection?.accessToken),
+    metaAccountName: u.metaConnection?.adAccountName || "",
+    metaLastSyncAt: u.metaConnection?.lastSyncAt || null,
   };
 }
 

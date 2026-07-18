@@ -24,7 +24,7 @@ const contributionSchema = new mongoose.Schema(
     },
     source: {
       type: String,
-      enum: ["manual", "excel_import", "github_sync", "seed"],
+      enum: ["manual", "excel_import", "github_sync", "seed", "meta_api"],
       default: "manual",
     },
   },

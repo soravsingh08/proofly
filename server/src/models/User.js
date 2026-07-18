@@ -27,6 +27,20 @@ const userSchema = new mongoose.Schema(
     streakFreezes: { type: [String], default: [] },
     emailReminders: { type: Boolean, default: true },
     isAdmin: { type: Boolean, default: false }, // set via npm run make-admin, never via API
+    // Meta (Facebook) Ads connection — dev-mode OAuth, own ad account
+    metaConnection: {
+      adAccountId: { type: String, default: "" },
+      adAccountName: { type: String, default: "" },
+      accessToken: { type: String, default: "" }, // long-lived user token
+      connectedAt: { type: Date, default: null },
+      lastSyncAt: { type: Date, default: null },
+    },
+    // cached AI-generated recruiter summary (regenerated on demand)
+    aiSummary: {
+      text: { type: String, default: "" },
+      highlights: { type: [String], default: [] },
+      generatedAt: { type: Date, default: null },
+    },
   },
   { timestamps: true }
 );

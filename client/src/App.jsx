@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
+import AssistantWidget from "./components/AssistantWidget";
 import { Spinner } from "./components/ui";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </PageFade>
+        <AssistantWidget />
       </BrowserRouter>
     </AuthProvider>
   );

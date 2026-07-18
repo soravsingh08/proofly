@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
-/* Warm-black "roastery" theme — cream ink, terracotta accent */
+/* Near-black graphite theme — neutral ink, terracotta accent */
 @theme {
-  --color-bg: #0d0b09;
-  --color-card: #161210;
-  --color-card2: #1e1915;
-  --color-line: #2b241e;
-  --color-ink: #f3eee5;
-  --color-mute: #a0968a;
+  --color-bg: #0a0a0a;
+  --color-card: #131313;
+  --color-card2: #1b1b1b;
+  --color-line: #272727;
+  --color-ink: #f1f1ef;
+  --color-mute: #9c9c98;
   --color-brand: #c4633a;
   --font-sans: "General Sans", "Inter", ui-sans-serif, system-ui, -apple-system,
     sans-serif;
@@ -50,10 +50,10 @@ body {
   outline: 1px solid rgba(255, 255, 255, 0.04);
   outline-offset: -1px;
 }
-.hm-0 { background: #1a1512; }
-.hm-1 { background: color-mix(in srgb, var(--accent, #c4633a) 30%, #0d0b09); }
-.hm-2 { background: color-mix(in srgb, var(--accent, #c4633a) 55%, #0d0b09); }
-.hm-3 { background: color-mix(in srgb, var(--accent, #c4633a) 80%, #0d0b09); }
+.hm-0 { background: #161616; }
+.hm-1 { background: color-mix(in srgb, var(--accent, #c4633a) 30%, #0a0a0a); }
+.hm-2 { background: color-mix(in srgb, var(--accent, #c4633a) 55%, #0a0a0a); }
+.hm-3 { background: color-mix(in srgb, var(--accent, #c4633a) 80%, #0a0a0a); }
 .hm-4 { background: var(--accent, #c4633a); }
 
 @keyframes pop {
