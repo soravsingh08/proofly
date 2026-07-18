@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { Button, Card, Input, PasswordInput } from "../components/ui";
+import AuthLayout from "../components/AuthLayout";
 
 export default function Register() {
   const { login } = useAuth();
@@ -35,11 +36,18 @@ export default function Register() {
   }
 
   return (
-    <div className="max-w-sm mx-auto mt-16 px-4">
-      <h1 className="text-2xl font-bold text-center mb-1">Create your profile</h1>
-      <p className="text-sm text-mute text-center mb-6">
-        Start building proof of your work today.
-      </p>
+    <AuthLayout
+      title="Create your profile"
+      subtitle="Start building proof of your work today."
+      footer={
+        <>
+          Already have an account?{" "}
+          <Link to="/login" className="text-brand hover:underline">
+            Sign in
+          </Link>
+        </>
+      }
+    >
       <Card>
         <form onSubmit={submit} className="space-y-4">
           <Input label="Full name" required value={form.name}
@@ -63,10 +71,6 @@ export default function Register() {
           </Button>
         </form>
       </Card>
-      <p className="text-sm text-mute text-center mt-4">
-        Already have an account?{" "}
-        <Link to="/login" className="text-brand hover:underline">Sign in</Link>
-      </p>
-    </div>
+    </AuthLayout>
   );
 }
