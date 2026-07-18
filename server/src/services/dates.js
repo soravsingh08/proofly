@@ -34,6 +34,13 @@ export function diffDays(a, b) {
   return Math.round((toUtcNoon(a) - toUtcNoon(b)) / 86400000);
 }
 
+// Monday of the week containing s — weekly goals reset here
+export function startOfWeek(s) {
+  const d = toUtcNoon(s);
+  d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7));
+  return fromUtc(d);
+}
+
 // Server's notion of "today" — ONLY used for the future-date guard
 // with a grace window, never for display. (B6, B7)
 export function serverToday() {

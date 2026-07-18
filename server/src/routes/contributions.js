@@ -7,9 +7,11 @@ import { isAllowedLogDate } from "../services/dates.js";
 const router = Router();
 router.use(requireAuth, requireRole);
 
+const EVIDENCE_RE = /^https?:\/\/\S+$/;
+
 router.post("/", async (req, res) => {
   try {
-    const { date, metrics, note } = req.body || {};
+    const { date, metrics, note, evidenceUrl } = req.body || {};
 
     // future dates blocked, backfill max 30 days (B5, B6)
     if (!isAllowedLogDate(date))
@@ -22,6 +24,10 @@ router.post("/", async (req, res) => {
     if (!clean)
       return res.status(400).json({ error: "Log at least one metric" });
 
+    // a valid proof link upgrades the entry to "evidence" (rung 2)
+    const evidence = String(evidenceUrl || "").trim().slice(0, 300);
+    const verified = EVIDENCE_RE.test(evidence);
+
     const contribution = await Contribution.create({
       userId: req.user._id,
       role: req.user.role,
@@ -29,6 +35,8 @@ router.post("/", async (req, res) => {
       metrics: clean.metrics,
       weightedTotal: clean.weightedTotal,
       note: String(note || "").slice(0, 280),
+      evidenceUrl: verified ? evidence : "",
+      verification: verified ? "evidence" : "self_reported",
     });
     res.status(201).json({ contribution });
   } catch (err) {
@@ -43,6 +51,26 @@ router.get("/", async (req, res) => {
     .sort({ date: -1, createdAt: -1 })
     .limit(limit);
   res.json({ contributions });
+});
+
+// attach proof after the fact — self_reported becomes evidence,
+// imported entries stay imported (higher rung)
+router.put("/:id/evidence", async (req, res) => {
+  const url = String(req.body?.evidenceUrl || "").trim().slice(0, 300);
+  if (!EVIDENCE_RE.test(url))
+    return res.status(400).json({ error: "Evidence must be a valid http(s) link" });
+
+  const contribution = await Contribution.findOne({
+    _id: req.params.id,
+    userId: req.user._id,
+  });
+  if (!contribution) return res.status(404).json({ error: "Not found" });
+
+  contribution.evidenceUrl = url;
+  if (contribution.verification === "self_reported")
+    contribution.verification = "evidence";
+  await contribution.save();
+  res.json({ contribution });
 });
 
 router.delete("/:id", async (req, res) => {

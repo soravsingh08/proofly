@@ -10,13 +10,14 @@ import {
 
 const router = Router();
 
-// memory storage, 2MB, .xlsx only (G1) — nothing touches disk
+// memory storage, 2MB, .xlsx/.csv only (G1) — nothing touches disk
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 2 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const ok = file.originalname.toLowerCase().endsWith(".xlsx");
-    cb(ok ? null : new Error("Only .xlsx files are accepted"), ok);
+    const name = file.originalname.toLowerCase();
+    const ok = name.endsWith(".xlsx") || name.endsWith(".csv");
+    cb(ok ? null : new Error("Only .xlsx or .csv files are accepted"), ok);
   },
 });
 

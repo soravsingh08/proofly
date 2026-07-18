@@ -15,6 +15,8 @@ const contributionSchema = new mongoose.Schema(
     metrics: { type: Map, of: Number, required: true },
     weightedTotal: { type: Number, required: true, min: 0 },
     note: { type: String, default: "", maxlength: 280 }, // B9
+    // proof link (PR, live campaign, Behance shot...) — rung 2 of the ladder
+    evidenceUrl: { type: String, default: "", maxlength: 300 },
     verification: {
       type: String,
       enum: ["self_reported", "evidence", "imported"],
@@ -22,7 +24,7 @@ const contributionSchema = new mongoose.Schema(
     },
     source: {
       type: String,
-      enum: ["manual", "excel_import", "seed"],
+      enum: ["manual", "excel_import", "github_sync", "seed"],
       default: "manual",
     },
   },
