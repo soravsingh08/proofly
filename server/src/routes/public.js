@@ -107,6 +107,7 @@ router.get("/:username", async (req, res) => {
       role: user.role,
       joined: user.createdAt,
     },
+    aiSummary: user.aiSummary?.text ? user.aiSummary : null,
     summary,
     badges: badgesFor(summary).filter((b) => b.earned),
     heatmap: heatmapPayload(totals),

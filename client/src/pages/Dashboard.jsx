@@ -9,6 +9,7 @@ import {
 } from "../components/ui";
 import { prettyDate } from "../utils/dates";
 import { formatMetric } from "../config/roles";
+import { Icon } from "../components/icons";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -38,7 +39,7 @@ export default function Dashboard() {
   }, []);
 
   if (error)
-    return <Empty icon="⚠️" title="Couldn't load your dashboard" hint="Is the API running?" />;
+    return <Empty icon="alert" title="Couldn't load your dashboard" hint="Is the API running?" />;
   if (!data) return <Spinner label="Loading your proof-of-work…" />;
 
   const { summary, heatmap, recent } = data;
@@ -48,8 +49,14 @@ export default function Dashboard() {
       {/* header row: identity + streak (streak is the hero number) */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            {role.icon} {user.name}
+          <h1 className="text-2xl font-bold flex items-center gap-3">
+            <span
+              className="w-9 h-9 rounded-lg border flex items-center justify-center"
+              style={{ borderColor: `${role.color}55`, background: `${role.color}1a`, color: role.color }}
+            >
+              <Icon name={role.icon} size={18} />
+            </span>
+            {user.name}
           </h1>
           <p className="text-sm text-mute">
             {role.label} · Score{" "}
@@ -61,7 +68,9 @@ export default function Dashboard() {
         <div className="flex items-center gap-3">
           <StreakBadge streak={summary.currentStreak} />
           <Link to="/log">
-            <Button>+ Log today's work</Button>
+            <Button>
+              <Icon name="plus" size={14} /> Log today's work
+            </Button>
           </Link>
         </div>
       </div>
@@ -97,7 +106,7 @@ export default function Dashboard() {
         <h2 className="font-semibold text-sm mb-4">Recent activity</h2>
         {recent.length === 0 ? (
           <Empty
-            icon="🌱"
+            icon="sprout"
             title="No contributions yet"
             hint="Log your first day of work and watch your graph light up."
             action={
@@ -134,7 +143,7 @@ export default function Dashboard() {
                   className="text-xs text-mute hover:text-red-400 shrink-0"
                   title="Delete entry"
                 >
-                  ✕
+                  <Icon name="x" size={14} />
                 </button>
               </li>
             ))}

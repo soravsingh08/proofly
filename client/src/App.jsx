@@ -11,6 +11,7 @@ import LogActivity from "./pages/LogActivity";
 import PublicProfile from "./pages/PublicProfile";
 import Leaderboard from "./pages/Leaderboard";
 import ImportMetaAds from "./pages/ImportMetaAds";
+import Resume from "./pages/Resume";
 
 // Route guards (edge cases A4, A5): logged out -> /login;
 // logged in without a role -> forced to /choose-role.
@@ -29,11 +30,22 @@ function GuestOnly({ children }) {
   return children;
 }
 
+// Re-mounts on every route change so each page fades/rises in.
+function PageFade({ children }) {
+  const location = useLocation();
+  return (
+    <div key={location.pathname} className="page-fade">
+      {children}
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Navbar />
+        <PageFade>
         <Routes>
           <Route path="/" element={<GuestOnly><Landing /></GuestOnly>} />
           <Route path="/login" element={<GuestOnly><Login /></GuestOnly>} />
@@ -47,9 +59,11 @@ export default function App() {
           <Route path="/import" element={<Protected><ImportMetaAds /></Protected>} />
           {/* public — no auth */}
           <Route path="/u/:username" element={<PublicProfile />} />
+          <Route path="/u/:username/resume" element={<Resume />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </PageFade>
       </BrowserRouter>
     </AuthProvider>
   );

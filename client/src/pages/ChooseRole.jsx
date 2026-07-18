@@ -4,6 +4,7 @@ import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { ROLES, ROLE_KEYS } from "../config/roles";
 import { Button } from "../components/ui";
+import { Icon } from "../components/icons";
 
 export default function ChooseRole() {
   const { saveUser } = useAuth();
@@ -46,7 +47,9 @@ export default function ChooseRole() {
               }`}
               style={active ? { borderColor: role.color, "--tw-ring-color": role.color } : {}}
             >
-              <div className="text-2xl mb-2">{role.icon}</div>
+              <div className="mb-3" style={{ color: role.color }}>
+                <Icon name={role.icon} size={22} />
+              </div>
               <div className="font-semibold text-sm">{role.label}</div>
               <div className="text-[11px] text-mute mt-1 leading-snug">
                 {role.metrics.slice(0, 3).map((m) => m.label).join(" · ")}

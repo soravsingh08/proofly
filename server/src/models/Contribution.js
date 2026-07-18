@@ -19,7 +19,7 @@ const contributionSchema = new mongoose.Schema(
     evidenceUrl: { type: String, default: "", maxlength: 300 },
     verification: {
       type: String,
-      enum: ["self_reported", "evidence", "imported"],
+      enum: ["self_reported", "evidence", "imported", "synced"],
       default: "self_reported",
     },
     source: {

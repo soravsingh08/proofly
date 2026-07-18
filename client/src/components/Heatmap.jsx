@@ -6,7 +6,7 @@ const DOW_LABELS = ["", "Mon", "", "Wed", "", "Fri", ""];
 // GitHub-style contribution heatmap. `days` = [{date, total, level}].
 // `accent` tints levels via CSS var. `popDate` animates one cell (the
 // applause moment when a new log lights up).
-export default function Heatmap({ days = [], accent = "#22c55e", popDate = null }) {
+export default function Heatmap({ days = [], accent = "#c4633a", popDate = null }) {
   const today = localToday();
   const { weeks, monthLabels } = useMemo(() => buildYearGrid(today), [today]);
   const byDate = useMemo(() => {

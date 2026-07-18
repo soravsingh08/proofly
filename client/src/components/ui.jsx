@@ -1,10 +1,11 @@
 // Small shared UI atoms — keeps pages lean and consistent.
 import { useState } from "react";
 import { formatMetric } from "../config/roles";
+import { Icon } from "./icons";
 
 export function Card({ children, className = "" }) {
   return (
-    <div className={`bg-card border border-line rounded-xl p-5 ${className}`}>
+    <div className={`bg-card border border-line rounded-2xl p-5 ${className}`}>
       {children}
     </div>
   );
@@ -29,7 +30,7 @@ export function StreakBadge({ streak, size = "lg" }) {
         big ? "px-5 py-2.5" : "px-3 py-1"
       }`}
     >
-      <span className={big ? "text-2xl" : "text-base"}>🔥</span>
+      <Icon name="flame" size={big ? 22 : 15} className="text-orange-400" />
       <span className={`font-bold ${big ? "text-2xl" : "text-sm"} text-orange-400`}>
         {streak}
       </span>
@@ -39,16 +40,22 @@ export function StreakBadge({ streak, size = "lg" }) {
 }
 
 export function VerificationBadge({ level }) {
+  if (level === "synced")
+    return (
+      <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-300 bg-emerald-500/10 border border-emerald-500/40 rounded-full px-2 py-0.5">
+        <Icon name="zap" size={10} /> Synced from Meta API
+      </span>
+    );
   if (level === "imported")
     return (
       <span className="inline-flex items-center gap-1 text-[10px] font-medium text-blue-300 bg-blue-500/10 border border-blue-500/40 rounded-full px-2 py-0.5">
-        ✓ Verified import
+        <Icon name="check" size={10} /> Verified import
       </span>
     );
   if (level === "evidence")
     return (
       <span className="inline-flex items-center gap-1 text-[10px] font-medium text-amber-300 bg-amber-500/10 border border-amber-500/40 rounded-full px-2 py-0.5">
-        📎 Evidence
+        <Icon name="paperclip" size={10} /> Evidence
       </span>
     );
   return (
@@ -67,10 +74,10 @@ export function Spinner({ label = "Loading…" }) {
   );
 }
 
-export function Empty({ icon = "📭", title, hint, action }) {
+export function Empty({ icon = "inbox", title, hint, action }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 gap-2 text-center">
-      <div className="text-4xl">{icon}</div>
+      <Icon name={icon} size={36} className="text-mute mb-1" strokeWidth={1.4} />
       <div className="font-semibold">{title}</div>
       {hint && <div className="text-sm text-mute max-w-sm">{hint}</div>}
       {action}
@@ -81,7 +88,7 @@ export function Empty({ icon = "📭", title, hint, action }) {
 export function Button({ children, className = "", ...props }) {
   return (
     <button
-      className={`bg-brand text-black font-semibold rounded-lg px-4 py-2 text-sm hover:opacity-90 active:scale-[0.98] transition disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      className={`inline-flex items-center justify-center gap-1.5 bg-brand text-ink font-medium rounded-lg px-5 py-2.5 text-sm hover:bg-[#d0764c] active:scale-[0.98] transition disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
       {...props}
     >
       {children}
