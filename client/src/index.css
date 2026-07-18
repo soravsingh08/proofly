@@ -35,21 +35,6 @@ body {
   .page-fade { animation: none; }
 }
 
-/* hand-drawn doodles start un-drawn from the first paint —
-   GSAP animates stroke-dashoffset to 0 to "draw" them in.
-   (paths use pathLength="1", so 1 = the whole path) */
-.doodle-draw,
-.doodle-draw-scroll {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-}
-@media (prefers-reduced-motion: reduce) {
-  .doodle-draw,
-  .doodle-draw-scroll {
-    stroke-dashoffset: 0;
-  }
-}
-
 /* soft terracotta spotlight behind hero sections */
 .hero-glow {
   background: radial-gradient(

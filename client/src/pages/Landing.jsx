@@ -2,11 +2,12 @@ import { useLayoutEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { ROLES, ROLE_KEYS } from "../config/roles";
 import { Button, StreakBadge, VerificationBadge } from "../components/ui";
 import { Icon } from "../components/icons";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin);
 
 /* ---- hand-drawn doodles, GitHub-style annotations ---- */
 
@@ -19,7 +20,6 @@ function DoodleUnderline({ className = "" }) {
         stroke="#c4633a"
         strokeWidth="3.5"
         strokeLinecap="round"
-        pathLength="1"
       />
     </svg>
   );
@@ -34,7 +34,6 @@ function DoodleArrow({ className = "" }) {
         stroke="#c4633a"
         strokeWidth="2.5"
         strokeLinecap="round"
-        pathLength="1"
       />
       <path
         className="doodle-draw-scroll"
@@ -43,7 +42,6 @@ function DoodleArrow({ className = "" }) {
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        pathLength="1"
       />
     </svg>
   );
@@ -60,7 +58,6 @@ function DoodleSparkle({ className = "" }) {
           stroke="#c4633a"
           strokeWidth="3"
           strokeLinecap="round"
-          pathLength="1"
         />
       ))}
     </svg>
@@ -182,20 +179,25 @@ export default function Landing() {
         .from(".hero-line", { yPercent: 115, duration: 1, stagger: 0.14 }, 0.2)
         .from(".hero-sub", { y: 24, opacity: 0, duration: 0.7 }, "-=0.55")
         .from(".hero-cta", { y: 18, opacity: 0, duration: 0.6, stagger: 0.08 }, "-=0.45")
-        .to(
+        .fromTo(
           ".doodle-draw",
-          { strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut" },
-          "-=0.5"
+          { drawSVG: "0%" },
+          { drawSVG: "100%", duration: 1.1, ease: "power2.inOut" },
+          "-=0.45"
         );
 
       // doodles that draw themselves in on scroll
       gsap.utils.toArray(".doodle-draw-scroll").forEach((el) => {
-        gsap.to(el, {
-          strokeDashoffset: 0,
-          duration: 1,
-          ease: "power2.inOut",
-          scrollTrigger: { trigger: el, start: "top 85%" },
-        });
+        gsap.fromTo(
+          el,
+          { drawSVG: "0%" },
+          {
+            drawSVG: "100%",
+            duration: 1,
+            ease: "power2.inOut",
+            scrollTrigger: { trigger: el, start: "top 85%" },
+          }
+        );
       });
 
       // generic scroll reveals
