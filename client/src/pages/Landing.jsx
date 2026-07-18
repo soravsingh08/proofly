@@ -310,16 +310,21 @@ export default function Landing() {
         });
       });
 
-      // role cards rise with a column stagger
-      gsap.utils.toArray(".role-card").forEach((el, i) => {
-        gsap.from(el, {
-          y: 40,
-          opacity: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          delay: (i % 3) * 0.08,
-          scrollTrigger: { trigger: el, start: "top 90%" },
-        });
+      // role cards rise with a stagger — batched so a whole row
+      // animates as one smooth group instead of per-card triggers
+      gsap.set(".role-card", { y: 36, opacity: 0 });
+      ScrollTrigger.batch(".role-card", {
+        start: "top 90%",
+        once: true,
+        onEnter: (batch) =>
+          gsap.to(batch, {
+            y: 0,
+            opacity: 1,
+            duration: 0.7,
+            ease: "power3.out",
+            stagger: 0.09,
+            overwrite: true,
+          }),
       });
 
       // stats count up when the band scrolls in
@@ -448,11 +453,11 @@ export default function Landing() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {ROLE_KEYS.map((k) => {
               const role = ROLES[k];
+              // outer div: GSAP reveal target — inner div: hover lift,
+              // so the two transforms never fight over each other
               return (
-                <div
-                  key={k}
-                  className="role-card bg-card border border-line rounded-2xl p-5 hover:border-mute/50 hover:-translate-y-1 transition duration-300"
-                >
+                <div key={k} className="role-card">
+                <div className="h-full bg-card border border-line rounded-2xl p-5 hover:border-mute/50 hover:-translate-y-1 transition duration-300">
                   <div className="flex items-center gap-2.5 mb-3">
                     <span
                       className="w-8 h-8 rounded-lg border flex items-center justify-center"
@@ -470,6 +475,7 @@ export default function Landing() {
                   <p className="text-[11px] text-mute mt-3">
                     {role.metrics.map((m) => m.label).join(" · ")}
                   </p>
+                </div>
                 </div>
               );
             })}

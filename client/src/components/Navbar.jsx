@@ -32,7 +32,7 @@ export default function Navbar() {
     }`;
 
   return (
-    <nav className="sticky top-0 z-40 bg-bg/85 backdrop-blur-md border-b border-line">
+    <nav className="sticky top-0 z-40 bg-bg/70 backdrop-blur-xl border-b border-line/60">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center gap-2">
         <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2 mr-6">
           <span className="font-semibold text-lg tracking-tight">
@@ -79,13 +79,13 @@ export default function Navbar() {
             <>
               <Link
                 to="/login"
-                className="text-sm border border-line rounded-lg px-4 py-2 text-ink hover:border-mute transition"
+                className="text-sm text-mute hover:text-ink transition px-2"
               >
                 Login
               </Link>
               <Link
                 to="/register"
-                className="text-sm bg-brand text-ink font-medium rounded-lg px-4 py-2 hover:bg-[#d0764c] transition"
+                className="text-sm bg-brand text-ink font-medium rounded-full px-5 py-2 hover:bg-[#d0764c] transition"
               >
                 Sign up
               </Link>
