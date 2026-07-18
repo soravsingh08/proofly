@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
-import { Button, Card, Input, PasswordInput } from "../components/ui";
+import { Button, Input, PasswordInput } from "../components/ui";
 import AuthLayout from "../components/AuthLayout";
 
 export default function Register() {
@@ -37,7 +37,7 @@ export default function Register() {
 
   return (
     <AuthLayout
-      decor="register"
+      variant="register"
       title="Create your profile"
       subtitle="Start building proof of your work today."
       footer={
@@ -49,8 +49,7 @@ export default function Register() {
         </>
       }
     >
-      <Card>
-        <form onSubmit={submit} className="space-y-4">
+      <form onSubmit={submit} className="space-y-4">
           <Input label="Full name" required value={form.name}
             onChange={(e) => set("name", e.target.value)} error={errors.name} />
           <div>
@@ -66,12 +65,11 @@ export default function Register() {
             onChange={(e) => set("email", e.target.value)} error={errors.email} />
           <PasswordInput label="Password (6+ characters)" required value={form.password}
             onChange={(e) => set("password", e.target.value)} error={errors.password} />
-          {errors._ && <p className="text-sm text-red-400">{errors._}</p>}
-          <Button className="w-full" disabled={busy}>
-            {busy ? "Creating…" : "Create account"}
-          </Button>
-        </form>
-      </Card>
+        {errors._ && <p className="text-sm text-red-400">{errors._}</p>}
+        <Button className="w-full py-2.5" disabled={busy}>
+          {busy ? "Creating…" : "Create account"}
+        </Button>
+      </form>
     </AuthLayout>
   );
 }

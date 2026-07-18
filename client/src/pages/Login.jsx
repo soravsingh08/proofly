@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
-import { Button, Card, Input, PasswordInput } from "../components/ui";
+import { Button, Input, PasswordInput } from "../components/ui";
 import AuthLayout from "../components/AuthLayout";
 
 export default function Login() {
@@ -41,27 +41,25 @@ export default function Login() {
         </>
       }
     >
-      <Card>
-        <form onSubmit={submit} className="space-y-4">
-          <Input
-            label="Email"
-            type="email"
-            required
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-          />
-          <PasswordInput
-            label="Password"
-            required
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-          />
-          {error && <p className="text-sm text-red-400">{error}</p>}
-          <Button className="w-full" disabled={busy}>
-            {busy ? "Signing in…" : "Sign in"}
-          </Button>
-        </form>
-      </Card>
+      <form onSubmit={submit} className="space-y-4">
+        <Input
+          label="Email"
+          type="email"
+          required
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+        />
+        <PasswordInput
+          label="Password"
+          required
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+        />
+        {error && <p className="text-sm text-red-400">{error}</p>}
+        <Button className="w-full py-2.5" disabled={busy}>
+          {busy ? "Signing in…" : "Sign in"}
+        </Button>
+      </form>
     </AuthLayout>
   );
 }

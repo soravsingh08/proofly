@@ -96,18 +96,30 @@ export function Button({ children, className = "", ...props }) {
   );
 }
 
+const inputCls = (error) =>
+  `w-full bg-bg border rounded-xl px-3.5 py-2.5 text-sm outline-none transition placeholder:text-mute/50 focus:border-brand/70 focus:ring-2 focus:ring-brand/15 ${
+    error ? "border-red-500" : "border-line"
+  }`;
+
 export function Input({ label, error, ...props }) {
   return (
     <label className="block">
-      {label && <span className="block text-xs text-mute mb-1.5">{label}</span>}
-      <input
-        className={`w-full bg-bg border rounded-lg px-3 py-2 text-sm outline-none focus:border-brand transition ${
-          error ? "border-red-500" : "border-line"
-        }`}
-        {...props}
-      />
+      {label && (
+        <span className="block text-xs font-medium text-mute mb-1.5">{label}</span>
+      )}
+      <input className={inputCls(error)} {...props} />
       {error && <span className="block text-xs text-red-400 mt-1">{error}</span>}
     </label>
+  );
+}
+
+function EyeIcon({ off }) {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" />
+      <circle cx="12" cy="12" r="3" />
+      {off && <line x1="4" y1="20" x2="20" y2="4" />}
+    </svg>
   );
 }
 
@@ -115,13 +127,13 @@ export function PasswordInput({ label, error, ...props }) {
   const [show, setShow] = useState(false);
   return (
     <label className="block">
-      {label && <span className="block text-xs text-mute mb-1.5">{label}</span>}
+      {label && (
+        <span className="block text-xs font-medium text-mute mb-1.5">{label}</span>
+      )}
       <div className="relative">
         <input
           type={show ? "text" : "password"}
-          className={`w-full bg-bg border rounded-lg px-3 py-2 pr-10 text-sm outline-none focus:border-brand transition ${
-            error ? "border-red-500" : "border-line"
-          }`}
+          className={`${inputCls(error)} pr-10`}
           {...props}
         />
         <button
@@ -129,9 +141,9 @@ export function PasswordInput({ label, error, ...props }) {
           tabIndex={-1}
           onClick={() => setShow(!show)}
           aria-label={show ? "Hide password" : "Show password"}
-          className="absolute inset-y-0 right-0 px-3 text-mute hover:text-ink transition"
+          className="absolute inset-y-0 right-0 px-3 flex items-center text-mute hover:text-ink transition"
         >
-          {show ? "🙈" : "👁️"}
+          <EyeIcon off={show} />
         </button>
       </div>
       {error && <span className="block text-xs text-red-400 mt-1">{error}</span>}
