@@ -35,6 +35,22 @@ body {
   .page-fade { animation: none; }
 }
 
+/* auth-page side cards — slow independent bobbing */
+.float-slow {
+  animation: floatBob 7s ease-in-out infinite;
+}
+.float-slower {
+  animation: floatBob 9s ease-in-out infinite 1.4s;
+}
+@keyframes floatBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .float-slow,
+  .float-slower { animation: none; }
+}
+
 /* footer heatmap strip — each cell breathes on its own offset,
    like activity being logged somewhere right now */
 .footer-cell {

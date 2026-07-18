@@ -37,6 +37,7 @@ export default function Register() {
 
   return (
     <AuthLayout
+      decor="register"
       title="Create your profile"
       subtitle="Start building proof of your work today."
       footer={
