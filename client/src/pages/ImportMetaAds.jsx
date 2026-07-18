@@ -69,13 +69,13 @@ export default function ImportMetaAds() {
           >
             <div className="text-4xl mb-3">📊</div>
             <p className="font-medium text-sm">
-              {busy ? "Parsing…" : "Drop your .xlsx here or click to browse"}
+              {busy ? "Parsing…" : "Drop your .xlsx or .csv here or click to browse"}
             </p>
-            <p className="text-xs text-mute mt-1">Max 2MB · .xlsx only</p>
+            <p className="text-xs text-mute mt-1">Max 2MB · .xlsx or .csv</p>
             <input
               ref={fileRef}
               type="file"
-              accept=".xlsx"
+              accept=".xlsx,.csv"
               className="hidden"
               onChange={(e) => upload(e.target.files?.[0])}
             />

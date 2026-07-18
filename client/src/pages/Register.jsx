@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
-import { Button, Card, Input } from "../components/ui";
+import { Button, Card, Input, PasswordInput } from "../components/ui";
 
 export default function Register() {
   const { login } = useAuth();
@@ -55,7 +55,7 @@ export default function Register() {
           </div>
           <Input label="Email" type="email" required value={form.email}
             onChange={(e) => set("email", e.target.value)} error={errors.email} />
-          <Input label="Password (6+ characters)" type="password" required value={form.password}
+          <PasswordInput label="Password (6+ characters)" required value={form.password}
             onChange={(e) => set("password", e.target.value)} error={errors.password} />
           {errors._ && <p className="text-sm text-red-400">{errors._}</p>}
           <Button className="w-full" disabled={busy}>
