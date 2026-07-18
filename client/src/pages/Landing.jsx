@@ -327,6 +327,16 @@ export default function Landing() {
           }),
       });
 
+      // footer wordmark — letters rise out of the baseline mask
+      gsap.set(".footer-letter", { yPercent: 115 });
+      gsap.to(".footer-letter", {
+        yPercent: 0,
+        duration: 1,
+        ease: "power4.out",
+        stagger: 0.055,
+        scrollTrigger: { trigger: ".footer-brand", start: "top 90%", once: true },
+      });
+
       // stats count up when the band scrolls in
       gsap.utils.toArray(".stat").forEach((el) => {
         const target = +el.dataset.n;
@@ -571,10 +581,42 @@ export default function Landing() {
           </div>
         </section>
 
-        <footer className="border-t border-line text-center text-xs text-mute py-8">
-          Proofly — consistency you can't fake. Built in 24 hours.
-        </footer>
       </div>
+
+      {/* ============ footer — awwwards-style giant wordmark ============ */}
+      <footer className="footer-brand border-t border-line mt-8 overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 pt-10 pb-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-mute">
+          <span>Consistency you can't fake — built in 24 hours.</span>
+          <div className="flex items-center gap-6">
+            <Link to="/leaderboard" className="hover:text-ink transition">
+              Leaderboard
+            </Link>
+            <Link to="/login" className="hover:text-ink transition">
+              Login
+            </Link>
+            <Link to="/register" className="hover:text-ink transition">
+              Sign up
+            </Link>
+            <span>© 2026</span>
+          </div>
+        </div>
+        {/* letters rise out of a baseline mask; slight crop below the fold */}
+        <div
+          aria-hidden="true"
+          className="select-none whitespace-nowrap text-center font-semibold tracking-[-0.05em] leading-[0.8] text-[clamp(4rem,19.5vw,21rem)] -mb-[0.14em]"
+        >
+          {"PROOFLY".split("").map((ch, i) => (
+            <span
+              key={i}
+              className="inline-block overflow-hidden align-bottom pb-[0.08em] -mb-[0.08em]"
+            >
+              <span className="footer-letter inline-block text-ink/90 hover:text-brand transition-colors duration-300">
+                {ch}
+              </span>
+            </span>
+          ))}
+        </div>
+      </footer>
     </div>
   );
 }
