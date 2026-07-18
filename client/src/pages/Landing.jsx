@@ -144,6 +144,105 @@ function ProfileMock() {
   );
 }
 
+// Mini "screenshot" of the résumé page — same sheet the real
+// /u/:username/resume renders, mocked with the hero profile's data
+function ResumeMock() {
+  return (
+    <div data-reveal className="relative">
+      <div className="bg-[#faf7f2] text-[#1c1814] rounded-2xl shadow-2xl shadow-black/50 p-6 rotate-1 hover:rotate-0 transition-transform duration-500">
+        <div className="flex items-start justify-between gap-3 pb-4 border-b-2 border-[#1c1814]">
+          <div>
+            <div className="text-xl font-semibold tracking-tight">Arjun Mehta</div>
+            <div className="text-xs font-medium text-[#22c55e] mt-0.5">
+              Software Developer
+            </div>
+          </div>
+          <div className="text-right text-[10px] text-[#5f574d] shrink-0">
+            <div className="font-medium text-[#1c1814]">@arjun</div>
+            <div className="mt-0.5">proofly.app/u/arjun</div>
+            <div className="mt-0.5">Verified proof-of-work · Proofly</div>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <div className="text-[9px] uppercase tracking-[0.2em] text-[#8a7f72] mb-1.5">
+            Summary
+          </div>
+          <p className="text-[11px] leading-relaxed">
+            Arjun is a Software Developer with 365 active days of logged,
+            verifiable work — currently on a 132-day streak. Across 1,124
+            contributions he has shipped 53 features and fixed 233 bugs,
+            with output backed by verified imports.
+          </p>
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {["132-day daily streak", "1,388 commits logged", "53 features shipped"].map(
+              (h) => (
+                <span
+                  key={h}
+                  className="text-[9px] rounded-full px-2 py-0.5 border border-[#d8cfc2] bg-white"
+                >
+                  {h}
+                </span>
+              )
+            )}
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <div className="text-[9px] uppercase tracking-[0.2em] text-[#8a7f72] mb-1.5">
+            Consistency
+          </div>
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              ["1,124", "contributions"],
+              ["132 d", "current streak"],
+              ["141 d", "longest streak"],
+              ["365", "active days"],
+            ].map(([v, l]) => (
+              <div
+                key={l}
+                className="bg-white border border-[#e4dccf] rounded-lg px-1 py-2 text-center"
+              >
+                <div className="text-sm font-semibold">{v}</div>
+                <div className="text-[8px] text-[#8a7f72] mt-0.5">{l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <div className="text-[9px] uppercase tracking-[0.2em] text-[#8a7f72] mb-1.5">
+            Lifetime output
+          </div>
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              ["1,388", "Commits"],
+              ["265", "Pull Requests"],
+              ["233", "Bugs Fixed"],
+              ["53", "Features"],
+            ].map(([v, l]) => (
+              <div key={l} className="border-l-2 border-[#22c55e] pl-2">
+                <div className="text-sm font-semibold">{v}</div>
+                <div className="text-[8px] text-[#8a7f72]">{l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* floating download/share affordances */}
+      <div className="absolute -bottom-5 right-2 flex items-center gap-2">
+        <span className="inline-flex items-center gap-1.5 bg-brand text-ink text-xs font-medium rounded-lg px-3.5 py-2 shadow-lg shadow-black/40">
+          <Icon name="download" size={13} /> Download PDF
+        </span>
+        <span className="hidden sm:inline-flex bg-card border border-line text-mute text-[11px] rounded-lg px-3 py-2 shadow-lg shadow-black/40">
+          or share the live link
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function Eyebrow({ children }) {
   return (
     <div className="text-[11px] uppercase tracking-[0.3em] text-brand mb-4">
@@ -418,6 +517,31 @@ export default function Landing() {
               })}
             </div>
           </div>
+        </section>
+
+        {/* ============ feature: résumé ============ */}
+        <section className="grid md:grid-cols-2 gap-12 items-center py-16">
+          <div data-reveal>
+            <Eyebrow>Proof to PDF</Eyebrow>
+            <h2 className="text-4xl md:text-5xl font-medium tracking-tight leading-tight">
+              Your résumé
+              <br />
+              writes itself
+            </h2>
+            <p className="text-mute mt-5 leading-relaxed">
+              Every logged day becomes a line on a recruiter-ready résumé — an
+              AI summary written from your real numbers, your streaks and your
+              verified imports. Download it as a PDF in one click, or just
+              share the live link: it keeps itself up to date as you keep
+              showing up.
+            </p>
+            <div className="mt-8">
+              <Link to="/u/arjun/resume">
+                <Button>See a live résumé</Button>
+              </Link>
+            </div>
+          </div>
+          <ResumeMock />
         </section>
 
         {/* ============ final CTA ============ */}
