@@ -283,7 +283,9 @@ export default function Landing() {
           { drawSVG: "0%" },
           { drawSVG: "100%", duration: 1.1, ease: "power2.inOut" },
           "-=0.45"
-        );
+        )
+        // opacity only — the CSS float-bob owns their transform
+        .from(".hero-side", { opacity: 0, duration: 0.9, stagger: 0.2 }, "-=0.6");
 
       // doodles that draw themselves in on scroll
       gsap.utils.toArray(".doodle-draw-scroll").forEach((el) => {
@@ -354,7 +356,37 @@ export default function Landing() {
 
       <div className="relative max-w-6xl mx-auto px-4">
         {/* ============ hero ============ */}
-        <section className="text-center pt-24 pb-8">
+        <section className="relative text-center pt-24 pb-8">
+          {/* floating side cards — same bobbing family as the auth pages */}
+          <div
+            aria-hidden="true"
+            className="hero-side hidden xl:block absolute left-0 top-44 float-slow pointer-events-none"
+          >
+            <div className="bg-card/90 backdrop-blur border border-line rounded-2xl p-4 shadow-xl shadow-black/30">
+              <StreakBadge streak={132} size="sm" />
+              <p className="text-[10px] text-mute mt-2">streaks that stick</p>
+            </div>
+          </div>
+          <div
+            aria-hidden="true"
+            className="hero-side hidden xl:block absolute right-0 top-60 float-slower pointer-events-none"
+          >
+            <div className="bg-card/90 backdrop-blur border border-line rounded-2xl p-4 shadow-xl shadow-black/30">
+              <VerificationBadge level="synced" />
+              <p className="text-[10px] text-mute mt-2">impossible to fake</p>
+            </div>
+          </div>
+          <div
+            aria-hidden="true"
+            className="hero-side hidden xl:block absolute right-0 bottom-44 float-slow pointer-events-none"
+          >
+            <div className="bg-card/90 backdrop-blur border border-line rounded-2xl p-4 shadow-xl shadow-black/30">
+              <HeroGraph color="#c4633a" weeks={12} cell={8} />
+              <p className="text-[10px] text-mute mt-2">
+                proofly.app/u/<span className="text-ink">you</span>
+              </p>
+            </div>
+          </div>
           <div className="hero-eyebrow text-[11px] uppercase tracking-[0.3em] text-mute mb-8">
             GitHub for every profession
           </div>
