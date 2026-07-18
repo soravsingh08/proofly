@@ -4,6 +4,7 @@ import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { ROLES, ROLE_KEYS } from "../config/roles";
 import { Card, Spinner, Empty } from "../components/ui";
+import { Icon } from "../components/icons";
 
 // Per-role only, streak-ranked — "we rank consistency, not claims"
 export default function Leaderboard() {
@@ -19,7 +20,13 @@ export default function Leaderboard() {
       .catch(() => setRows([]));
   }, [role]);
 
-  const medal = (i) => ["🥇", "🥈", "🥉"][i] || `${i + 1}`;
+  const medalColor = ["#e8b923", "#b8bcc4", "#c98a56"];
+  const medal = (i) =>
+    i < 3 ? (
+      <Icon name="trophy" size={15} style={{ color: medalColor[i] }} />
+    ) : (
+      `${i + 1}`
+    );
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -34,14 +41,14 @@ export default function Leaderboard() {
           <button
             key={k}
             onClick={() => setRole(k)}
-            className={`text-xs px-3 py-1.5 rounded-full border transition ${
+            className={`inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition ${
               role === k
                 ? "text-black font-semibold"
                 : "border-line text-mute hover:text-ink"
             }`}
             style={role === k ? { background: ROLES[k].color, borderColor: ROLES[k].color } : {}}
           >
-            {ROLES[k].icon} {ROLES[k].label}
+            <Icon name={ROLES[k].icon} size={12} /> {ROLES[k].label}
           </button>
         ))}
       </div>
@@ -50,7 +57,7 @@ export default function Leaderboard() {
         <Spinner />
       ) : rows.length === 0 ? (
         <Empty
-          icon="🏆"
+          icon="trophy"
           title="No one here yet"
           hint="Claim the #1 spot — start logging your work."
         />
@@ -61,7 +68,11 @@ export default function Leaderboard() {
               <tr className="text-xs text-mute border-b border-line">
                 <th className="text-left font-medium px-4 py-3">#</th>
                 <th className="text-left font-medium px-4 py-3">Professional</th>
-                <th className="text-right font-medium px-4 py-3">🔥 Streak</th>
+                <th className="text-right font-medium px-4 py-3">
+                  <span className="inline-flex items-center gap-1">
+                    <Icon name="flame" size={11} className="text-orange-400" /> Streak
+                  </span>
+                </th>
                 <th className="text-right font-medium px-4 py-3">Active days</th>
                 <th className="text-right font-medium px-4 py-3 hidden sm:table-cell">Longest</th>
               </tr>

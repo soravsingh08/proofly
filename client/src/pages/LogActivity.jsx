@@ -4,6 +4,7 @@ import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { ROLES } from "../config/roles";
 import { Button, Card, Input } from "../components/ui";
+import { Icon } from "../components/icons";
 import { addDays, localToday } from "../utils/dates";
 
 // The daily logging form — fields GENERATED from role config.
@@ -45,8 +46,11 @@ export default function LogActivity() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-10">
-      <h1 className="text-2xl font-bold mb-1">
-        {role.icon} Log your work
+      <h1 className="text-2xl font-bold mb-1 flex items-center gap-2.5">
+        <span style={{ color: role.color }}>
+          <Icon name={role.icon} size={20} />
+        </span>
+        Log your work
       </h1>
       <p className="text-sm text-mute mb-6">
         {role.label} · every day you log builds your public proof.

@@ -4,7 +4,7 @@ export const ROLES = {
   developer: {
     label: "Software Developer",
     color: "#22c55e",
-    icon: "💻",
+    icon: "code",
     metrics: [
       { key: "commit", label: "Commits", type: "count" },
       { key: "pull_request", label: "Pull Requests", type: "count" },
@@ -15,7 +15,7 @@ export const ROLES = {
   digital_marketing: {
     label: "Digital Marketer",
     color: "#f59e0b",
-    icon: "📈",
+    icon: "trending-up",
     metrics: [
       { key: "seo_task", label: "SEO Tasks", type: "count" },
       { key: "blog", label: "Blogs Published", type: "count" },
@@ -26,7 +26,7 @@ export const ROLES = {
   sales: {
     label: "Sales Executive",
     color: "#ef4444",
-    icon: "🤝",
+    icon: "briefcase",
     metrics: [
       { key: "call", label: "Calls Made", type: "count" },
       { key: "meeting", label: "Meetings", type: "count" },
@@ -37,7 +37,7 @@ export const ROLES = {
   hr: {
     label: "HR / Recruiter",
     color: "#a855f7",
-    icon: "🧑‍💼",
+    icon: "users",
     metrics: [
       { key: "candidate", label: "Candidates Sourced", type: "count" },
       { key: "interview", label: "Interviews", type: "count" },
@@ -47,7 +47,7 @@ export const ROLES = {
   meta_ads: {
     label: "Meta Ads Specialist",
     color: "#3b82f6",
-    icon: "🎯",
+    icon: "target",
     importable: true,
     metrics: [
       { key: "leads", label: "Leads Generated", type: "count" },
@@ -60,7 +60,7 @@ export const ROLES = {
   designer: {
     label: "Designer & Video Editor",
     color: "#ec4899",
-    icon: "🎨",
+    icon: "pen-tool",
     metrics: [
       { key: "design", label: "Designs Delivered", type: "count" },
       { key: "video", label: "Videos Edited", type: "count" },
