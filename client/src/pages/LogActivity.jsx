@@ -29,7 +29,7 @@ export default function LogActivity() {
       if (Number.isFinite(n) && n > 0) metrics[k] = n;
     }
     if (Object.keys(metrics).length === 0) {
-      setError("Log at least one metric — zeros don't count.");
+      setError("Log at least one metric, zeros don't count.");
       return;
     }
     setBusy(true);

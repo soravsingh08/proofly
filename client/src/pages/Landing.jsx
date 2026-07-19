@@ -94,7 +94,7 @@ function ProfileMock() {
     <div data-reveal className="relative mx-auto max-w-3xl mt-20">
       {/* hand-drawn annotation, GitHub-style */}
       <div className="hidden lg:block absolute -left-40 -top-10 w-32 text-left">
-        <span className="text-sm text-mute italic">this could be you —</span>
+        <span className="text-sm text-mute italic">this could be you</span>
         <DoodleArrow className="w-20 mt-2 ml-10" />
       </div>
       <div className="bg-card border border-line rounded-2xl p-6 md:p-8 text-left shadow-2xl shadow-black/50">
@@ -170,7 +170,7 @@ function ResumeMock() {
           </div>
           <p className="text-[11px] leading-relaxed">
             Arjun is a Software Developer with 365 active days of logged,
-            verifiable work — currently on a 132-day streak. Across 1,124
+            verifiable work, currently on a 132-day streak. Across 1,124
             contributions he has shipped 53 features and fixed 233 bugs,
             with output backed by verified imports.
           </p>
@@ -370,7 +370,7 @@ export default function Landing() {
             </span>
           </h1>
           <p className="hero-sub text-mute mt-8 max-w-xl mx-auto text-base md:text-lg leading-relaxed">
-            Don't tell recruiters what you did — prove it, every day. Sales,
+            Don't tell recruiters what you did. Prove it, every day. Sales,
             marketing, HR, ads and design professionals get a public
             proof-of-work profile, built one contribution at a time.
           </p>
@@ -417,7 +417,7 @@ export default function Landing() {
               Proofly proves it.
             </h2>
             <p className="text-mute mt-5 leading-relaxed">
-              Every contribution carries its verification level — synced
+              Every contribution carries its verification level: synced
               straight from the Meta Ads API, imported from real exports, or
               backed by evidence. Recruiters see exactly how much to trust
               each number. That's the difference between a claim and a proof.
@@ -425,7 +425,7 @@ export default function Landing() {
           </div>
           <div data-reveal className="bg-card border border-line rounded-2xl p-6 space-y-4">
             {[
-              ["synced", "Pulled from the Meta API — impossible to fake"],
+              ["synced", "Pulled from the Meta API, impossible to fake"],
               ["imported", "Parsed from a real platform export"],
               ["evidence", "Screenshot or link attached"],
             ].map(([level, desc]) => (
@@ -445,8 +445,8 @@ export default function Landing() {
               A contribution graph for every craft
             </h2>
             <p className="text-mute mt-5 leading-relaxed">
-              Calls closed, campaigns shipped, hires made, designs delivered —
-              if it's real work, it lights up a square. Each role gets its own
+              Calls closed, campaigns shipped, hires made, designs delivered.
+              If it's real work, it lights up a square. Each role gets its own
               metrics and its own color.
             </p>
           </div>
@@ -493,7 +493,7 @@ export default function Landing() {
             </h2>
             <p className="text-mute mt-5 leading-relaxed">
               One log a day keeps the flame burning. Miss a day, lose the
-              streak — the same loop that makes GitHub addictive, now working
+              streak. It's the same loop that makes GitHub addictive, now working
               for your whole career. Climb the leaderboard while you're at it.
             </p>
           </div>
@@ -535,7 +535,7 @@ export default function Landing() {
               writes itself
             </h2>
             <p className="text-mute mt-5 leading-relaxed">
-              Every logged day becomes a line on a recruiter-ready résumé — an
+              Every logged day becomes a line on a recruiter-ready résumé: an
               AI summary written from your real numbers, your streaks and your
               verified imports. Download it as a PDF in one click, or just
               share the live link: it keeps itself up to date as you keep
@@ -594,7 +594,7 @@ export default function Landing() {
             </div>
             <p className="text-sm text-mute mt-4 leading-relaxed">
               The contribution graph for every profession. Log real work, keep
-              the streak, and let recruiters see proof — not promises.
+              the streak, and let recruiters see proof, not promises.
             </p>
           </div>
           <div className="flex gap-16 sm:gap-24">
@@ -642,7 +642,7 @@ export default function Landing() {
 
         <div className="border-t border-line mt-6">
           <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-mute">
-            <span>© 2026 Proofly — consistency you can't fake.</span>
+            <span>© 2026 Proofly. Consistency you can't fake.</span>
             <span>Built in 24 hours</span>
           </div>
         </div>

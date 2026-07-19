@@ -56,7 +56,7 @@ export default function ImportMetaAds() {
         <Icon name="target" size={22} className="text-brand" /> Import Meta Ads report
       </h1>
       <p className="text-sm text-mute mb-6">
-        Upload your exported report — every day becomes a{" "}
+        Upload your exported report and every day becomes a{" "}
         <span className="text-blue-300">verified</span> contribution.
       </p>
 
@@ -133,7 +133,7 @@ export default function ImportMetaAds() {
             </button>
           </div>
           <p className="text-[11px] text-mute mt-3">
-            Re-importing replaces your previous import — no duplicates, ever.
+            Re-importing replaces your previous import. No duplicates, ever.
           </p>
         </Card>
       )}
@@ -158,7 +158,7 @@ function MetaConnectCard() {
     if (params.get("meta") === "connected") {
       api.get("/auth/me").then((r) => {
         saveUser(r.data.user);
-        setMsg("Meta account connected — hit Sync to pull your last 90 days.");
+        setMsg("Meta account connected. Hit Sync to pull your last 90 days.");
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -211,7 +211,7 @@ function MetaConnectCard() {
                     ? ` · last sync ${new Date(user.metaLastSyncAt).toLocaleString()}`
                     : " · never synced"
                 }`
-              : "Connect your ad account — contributions sync straight from Meta, fully verified."}
+              : "Connect your ad account and contributions sync straight from Meta, fully verified."}
           </p>
         </div>
         {user.metaConnected ? (

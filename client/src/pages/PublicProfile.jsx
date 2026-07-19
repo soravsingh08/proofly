@@ -185,8 +185,8 @@ export default function PublicProfile() {
       </Card>
 
       <p className="text-center text-xs text-mute pb-6">
-        Proof-of-work profile powered by <span className="text-ink font-semibold">Proofly</span> —
-        consistency you can't fake.
+        Proof-of-work profile powered by <span className="text-ink font-semibold">Proofly</span>.
+        Consistency you can't fake.
       </p>
     </div>
   );
@@ -240,7 +240,7 @@ function EditProfileModal({ profile, onClose, onSaved }) {
           required
         />
         <Input
-          label="Headline — one line recruiters see first"
+          label="Headline (the one line recruiters see first)"
           value={headline}
           onChange={(e) => setHeadline(e.target.value)}
           maxLength={120}
@@ -329,7 +329,7 @@ function AiSummaryCard({ aiSummary, isOwn, accent, onGenerated }) {
         </>
       ) : (
         <p className="text-sm text-mute">
-          Let AI turn your contribution history into a recruiter-ready summary —
+          Let AI turn your contribution history into a recruiter-ready summary,
           built from your logged metrics, not self-description.
         </p>
       )}

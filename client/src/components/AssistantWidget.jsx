@@ -14,7 +14,7 @@ const QUICK_QUESTIONS = [
 
 const HELLO = {
   from: "bot",
-  text: "Hi! I'm the Proofly guide — ask me anything about how the site works, or tap a question below.",
+  text: "Hi! I'm the Proofly guide. Ask me anything about how the site works, or tap a question below.",
   links: [],
 };
 
@@ -85,7 +85,7 @@ export default function AssistantWidget() {
       const r = await api.post("/ai/assistant", { message, history });
       setMessages((m) => [...m, { from: "bot", text: r.data.reply, links: r.data.links }]);
     } catch (err) {
-      setMessages((m) => [...m, { from: "bot", text: errMsg(err, "I hiccuped — try again?") }]);
+      setMessages((m) => [...m, { from: "bot", text: errMsg(err, "I hiccuped, try again?") }]);
     } finally {
       setBusy(false);
     }

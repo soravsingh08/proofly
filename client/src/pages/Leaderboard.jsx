@@ -98,7 +98,7 @@ export default function Leaderboard() {
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-1">Leaderboard</h1>
       <p className="text-sm text-mute mb-6">
-        Ranked by consistency — you can't fake showing up every day.
+        Ranked by consistency. You can't fake showing up every day.
       </p>
 
       {/* role tabs */}
@@ -125,7 +125,7 @@ export default function Leaderboard() {
         <Empty
           icon="trophy"
           title="No one here yet"
-          hint="Claim the #1 spot — start logging your work."
+          hint="Claim the #1 spot. Start logging your work."
         />
       ) : (
         <>

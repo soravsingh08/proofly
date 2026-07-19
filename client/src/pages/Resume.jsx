@@ -173,7 +173,7 @@ export default function Resume() {
         {/* footer */}
         <div className="mt-8 pt-4 border-t border-[#e4dccf] flex items-center justify-between text-[10px] text-[#8a7f72]">
           <span>
-            Every number verified or logged daily on Proofly — not
+            Every number verified or logged daily on Proofly, not
             self-described.
           </span>
           <span className="font-medium">{profileUrl}</span>
@@ -181,7 +181,7 @@ export default function Resume() {
       </div>
 
       <p className="no-print text-center text-xs text-mute mt-4">
-        Tip: in the print dialog choose "Save as PDF" — then send it, or just
+        Tip: in the print dialog choose "Save as PDF", then send it or just
         share your live link.
       </p>
     </div>
