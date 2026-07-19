@@ -354,7 +354,7 @@ export default function Landing() {
 
       <div className="relative max-w-6xl mx-auto px-4">
         {/* ============ hero ============ */}
-        <section className="text-center pt-24 pb-8">
+        <section className="relative text-center pt-24 pb-8">
           <div className="hero-eyebrow text-[11px] uppercase tracking-[0.3em] text-mute mb-8">
             GitHub for every profession
           </div>
