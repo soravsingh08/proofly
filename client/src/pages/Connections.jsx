@@ -3,7 +3,7 @@ import gsap from "gsap";
 import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { ROLES } from "../config/roles";
-import { Button, Card, Spinner } from "../components/ui";
+import { Button, Card, Spinner, SketchLine } from "../components/ui";
 import { Icon } from "../components/icons";
 import { toast } from "../components/toast";
 
@@ -47,7 +47,10 @@ export default function Connections() {
   return (
     <div ref={rootRef} className="relative max-w-3xl mx-auto px-4 py-10">
       <div data-rise>
-        <h1 className="text-2xl font-bold mb-1">Connections</h1>
+        <div className="w-fit mb-2">
+          <h1 className="text-2xl font-bold">Connections</h1>
+          <SketchLine className="w-full h-3 mt-1.5" />
+        </div>
         <p className="text-sm text-mute mb-6">
           Connect a source once, we fetch your work every day and log it as{" "}
           <span className="text-blue-300">✓ verified</span>. No more manual entries.
