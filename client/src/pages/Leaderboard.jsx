@@ -4,7 +4,7 @@ import gsap from "gsap";
 import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { ROLES, ROLE_KEYS } from "../config/roles";
-import { Card, Spinner, Empty } from "../components/ui";
+import { Card, Spinner, Empty, SketchLine } from "../components/ui";
 import { Icon } from "../components/icons";
 
 const MEDALS = ["var(--medal-1)", "var(--medal-2)", "var(--medal-3)"];
@@ -134,7 +134,10 @@ export default function Leaderboard() {
     <div ref={rootRef} className="relative max-w-5xl mx-auto px-4 py-8">
       <div data-rise className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold mb-1">Leaderboard</h1>
+          <div className="w-fit mb-2">
+            <h1 className="text-2xl font-bold">Leaderboard</h1>
+            <SketchLine className="w-full h-3 mt-1.5" />
+          </div>
           <p className="text-sm text-mute mb-6">
             Ranked by consistency. You can't fake showing up every day.
           </p>
