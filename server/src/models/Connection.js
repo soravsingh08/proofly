@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 
 // A connected data source we sync daily: a GitHub repo, a shared
-// Google Sheet, or a YouTube channel. Contributions it produces
-// carry its _id so a re-sync (or disconnect) replaces cleanly.
+// Google Sheet, a YouTube channel, or a LeetCode profile.
+// Contributions it produces carry its _id so a re-sync (or
+// disconnect) replaces cleanly.
 const connectionSchema = new mongoose.Schema(
   {
     userId: {
@@ -13,7 +14,7 @@ const connectionSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["github_repo", "sheet", "youtube"],
+      enum: ["github_repo", "sheet", "youtube", "leetcode"],
       required: true,
     },
     label: { type: String, required: true, maxlength: 120 },
@@ -21,6 +22,7 @@ const connectionSchema = new mongoose.Schema(
       repo: { type: String, default: "" }, // "owner/name"
       url: { type: String, default: "" }, // sheet link
       channelId: { type: String, default: "" }, // UC…
+      username: { type: String, default: "" }, // leetcode profile
     },
     lastSyncAt: { type: Date, default: null },
     lastSynced: { type: Number, default: 0 },

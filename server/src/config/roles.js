@@ -20,6 +20,7 @@ export const ROLES = {
       { key: "pull_request", label: "Pull Requests", type: "count", weight: 3 },
       { key: "bug_fixed", label: "Bugs Fixed", type: "count", weight: 2 },
       { key: "feature", label: "Features Shipped", type: "count", weight: 5 },
+      { key: "problem_solved", label: "LeetCode Solved", type: "count", weight: 1 },
     ],
   },
 
