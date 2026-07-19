@@ -21,6 +21,7 @@ export const ROLES = {
       { key: "bug_fixed", label: "Bugs Fixed", type: "count", weight: 2 },
       { key: "feature", label: "Features Shipped", type: "count", weight: 5 },
       { key: "problem_solved", label: "LeetCode Solved", type: "count", weight: 1 },
+      { key: "code_review", label: "Code Reviews", type: "count", weight: 2 },
     ],
   },
 
@@ -32,6 +33,8 @@ export const ROLES = {
       { key: "seo_task", label: "SEO Tasks", type: "count", weight: 1 },
       { key: "blog", label: "Blogs Published", type: "count", weight: 4 },
       { key: "campaign", label: "Campaigns", type: "count", weight: 3 },
+      { key: "social_post", label: "Social Posts", type: "count", weight: 1 },
+      { key: "lead", label: "Leads Generated", type: "count", weight: 3 },
       { key: "traffic", label: "Traffic Driven", type: "count", weight: 0 },
     ],
   },
@@ -44,6 +47,8 @@ export const ROLES = {
       { key: "call", label: "Calls Made", type: "count", weight: 1 },
       { key: "meeting", label: "Meetings", type: "count", weight: 2 },
       { key: "deal", label: "Deals Closed", type: "count", weight: 6 },
+      { key: "followup", label: "Follow-ups", type: "count", weight: 1 },
+      { key: "demo", label: "Demos Given", type: "count", weight: 3 },
       { key: "revenue", label: "Revenue", type: "currency", weight: 0 },
     ],
   },
@@ -56,6 +61,8 @@ export const ROLES = {
       { key: "candidate", label: "Candidates Sourced", type: "count", weight: 1 },
       { key: "interview", label: "Interviews", type: "count", weight: 2 },
       { key: "hire", label: "Hires", type: "count", weight: 6 },
+      { key: "screening", label: "Screenings Done", type: "count", weight: 1 },
+      { key: "offer", label: "Offers Made", type: "count", weight: 4 },
     ],
   },
 
@@ -67,6 +74,8 @@ export const ROLES = {
     metrics: [
       { key: "leads", label: "Leads Generated", type: "count", weight: 2 },
       { key: "campaign", label: "Campaigns Created", type: "count", weight: 4 },
+      { key: "creative", label: "Ad Creatives", type: "count", weight: 2 },
+      { key: "ab_test", label: "A/B Tests Run", type: "count", weight: 3 },
       { key: "spend", label: "Ad Spend", type: "currency", weight: 0 },
       { key: "roas", label: "ROAS", type: "ratio", weight: 0 },
       { key: "ctr", label: "CTR %", type: "percent", weight: 0 },
@@ -81,6 +90,8 @@ export const ROLES = {
       { key: "design", label: "Designs Delivered", type: "count", weight: 2 },
       { key: "video", label: "Videos Edited", type: "count", weight: 3 },
       { key: "approval", label: "Client Approvals", type: "count", weight: 4 },
+      { key: "concept", label: "Concepts Pitched", type: "count", weight: 1 },
+      { key: "reel", label: "Reels / Shorts Made", type: "count", weight: 2 },
     ],
   },
 };

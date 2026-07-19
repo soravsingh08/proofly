@@ -9,6 +9,7 @@ import Heatmap from "../components/Heatmap";
 import { Card, VerificationBadge, Spinner, Empty, Button, SketchLine } from "../components/ui";
 import { addDays, localToday, prettyDate } from "../utils/dates";
 import { Icon } from "../components/icons";
+import { WeekPlanner, FocusTimer } from "../components/PlannerTimer";
 
 const BADGE_ICONS = {
   first_log: "sprout",
@@ -127,13 +128,11 @@ export default function Dashboard() {
     : 0;
 
   return (
-    <div ref={rootRef} className="relative max-w-7xl mx-auto px-4 py-8 space-y-4">
-      {/* greeting hero — app-style banner with the day's next action */}
-      <div
-        data-rise
-        className="relative overflow-hidden rounded-2xl border border-line bg-card p-6 md:p-8"
-      >
-        <div className="relative flex flex-wrap items-center justify-between gap-6">
+    <div ref={rootRef} className="dash-calm relative max-w-7xl mx-auto px-4 py-8 space-y-5">
+      {/* one calm header surface: greeting, next action, and the four
+          numbers that matter — no boxes inside boxes */}
+      <div data-rise className="relative overflow-hidden rounded-2xl bg-card p-6 md:p-8">
+        <div className="flex flex-wrap items-start justify-between gap-6">
           <div>
             <p className="text-sm text-brand font-medium">{greeting()},</p>
             <div className="w-fit">
@@ -145,110 +144,80 @@ export default function Dashboard() {
             <p className="text-sm text-mute mt-1.5 max-w-md">
               {nudge || "Let's keep your proof growing today."}
             </p>
+          </div>
+          <div className="flex flex-col items-end gap-3">
             <Link
               to="/log"
-              className="mt-5 inline-flex items-center gap-3 bg-bg border border-line rounded-xl px-4 py-2.5 text-sm hover:border-brand/60 transition group"
+              className="inline-flex items-center gap-2.5 bg-brand text-ink rounded-xl px-4 py-2.5 text-sm font-medium hover:bg-[#d0764c] transition"
             >
-              <span className="w-8 h-8 rounded-lg bg-brand/15 border border-brand/30 text-brand flex items-center justify-center">
-                <Icon name={insights.daysSinceLastLog === 0 ? "check" : "plus"} size={14} />
+              <Icon name={insights.daysSinceLastLog === 0 ? "check" : "plus"} size={14} />
+              {insights.daysSinceLastLog === 0
+                ? "Today's logged. Stack more"
+                : "Log today's work"}
+            </Link>
+            <Link
+              to={`/u/${user.username}`}
+              className="hidden sm:inline-flex items-center gap-2 text-xs text-mute hover:text-ink transition"
+              title="Your public profile"
+            >
+              <span style={{ color: role.color }}>
+                <Icon name={role.icon} size={13} />
               </span>
-              <span className="text-left">
-                <span className="block text-[11px] text-mute">Next up</span>
-                <span className="block font-medium">
-                  {insights.daysSinceLastLog === 0
-                    ? "Today's logged. Stack more on top"
-                    : "Log today's work"}
-                </span>
-              </span>
-              <span className="text-mute group-hover:text-ink transition">→</span>
+              proofly.app/u/{user.username}
             </Link>
           </div>
-          <Link
-            to={`/u/${user.username}`}
-            className="hidden sm:flex items-center gap-3 bg-bg border border-line rounded-xl px-4 py-3 hover:border-mute transition"
-            title="Your public profile"
-          >
-            <span
-              className="w-9 h-9 rounded-lg border flex items-center justify-center"
-              style={{
-                color: role.color,
-                borderColor: `${role.color}55`,
-                background: `${role.color}14`,
-              }}
-            >
-              <Icon name={role.icon} size={16} />
-            </span>
-            <span>
-              <span className="block text-xs text-mute">{role.label}</span>
-              <span className="block text-sm font-medium">
-                proofly.app/u/{user.username}
-              </span>
-            </span>
-          </Link>
         </div>
-      </div>
 
-      {/* quick actions — app-style tiles */}
-      <div data-rise className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {[
-          { to: "/log", icon: "plus", color: "#c4633a", label: "Log work", sub: "Keep the streak" },
-          { to: "/connections", icon: "zap", color: "#3b82f6", label: "Connect sources", sub: "Auto-verified daily" },
-          { to: "/leaderboard", icon: "trophy", color: "#22c55e", label: "Leaderboard", sub: "See your rank" },
-          { to: `/u/${user.username}/resume`, icon: "file-text", color: "#a855f7", label: "Résumé", sub: "Proof to PDF" },
-        ].map((a) => (
-          <Link
-            key={a.to}
-            to={a.to}
-            className="bg-card border border-line rounded-2xl p-4 card-lift"
-          >
-            <span
-              className="w-10 h-10 rounded-full flex items-center justify-center mb-3"
-              style={{
-                background: `${a.color}1a`,
-                color: a.color,
-                border: `1px solid ${a.color}40`,
-              }}
-            >
-              <Icon name={a.icon} size={16} />
-            </span>
-            <span className="block text-sm font-semibold">{a.label}</span>
-            <span className="block text-[11px] mt-0.5" style={{ color: a.color }}>
-              {a.sub}
-            </span>
-          </Link>
-        ))}
-      </div>
-
-      {/* hero stats */}
-      <div data-rise className="grid grid-cols-2 md:grid-cols-[1.5fr_1fr_1fr_1fr] gap-3">
-        <Card className="col-span-2 md:col-span-1 flex items-center gap-4 !py-4 card-lift">
-          <Icon name="flame" size={34} className="text-brand flame-pulse" />
+        {/* borderless stats strip */}
+        <div className="flex flex-wrap gap-x-10 gap-y-4 mt-7 pt-6 border-t border-line/70">
           <div>
-            <div className="text-2xl font-bold leading-none">
-              <span data-count={summary.currentStreak}>{summary.currentStreak}</span>{" "}
-              <span className="text-xs text-mute font-normal">day streak</span>
+            <div className="flex items-center gap-2 text-2xl font-bold leading-none">
+              <Icon name="flame" size={20} className="text-brand flame-pulse" />
+              <span data-count={summary.currentStreak}>{summary.currentStreak}</span>
             </div>
             <div className="text-[11px] text-mute mt-1.5 flex items-center gap-1">
-              longest {summary.longestStreak} ·
+              day streak · longest {summary.longestStreak} ·
               <FreezeControl freezes={freezes} refresh={load} />
             </div>
           </div>
-        </Card>
-        <Card className="text-center !py-4 card-lift">
-          <div className="text-2xl font-bold" data-count={summary.score}>{summary.score}</div>
-          <div className="text-xs text-mute mt-1">score</div>
-        </Card>
-        <Card className="text-center !py-4 card-lift">
-          <div className="text-2xl font-bold" data-count={summary.activeDays}>{summary.activeDays}</div>
-          <div className="text-xs text-mute mt-1">active days</div>
-        </Card>
-        <Card className="!py-4 card-lift flex items-center justify-center gap-3">
-          <Ring pct={verifiedPct} />
-          <div className="text-left">
-            <div className="text-lg font-bold text-green-400 leading-none">{verifiedPct}%</div>
-            <div className="text-xs text-mute mt-1">verified proof</div>
+          <div>
+            <div className="text-2xl font-bold leading-none" data-count={summary.score}>
+              {summary.score}
+            </div>
+            <div className="text-[11px] text-mute mt-1.5">score</div>
           </div>
-        </Card>
+          <div>
+            <div className="text-2xl font-bold leading-none" data-count={summary.activeDays}>
+              {summary.activeDays}
+            </div>
+            <div className="text-[11px] text-mute mt-1.5">active days</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold leading-none text-green-400">
+              {verifiedPct}%
+            </div>
+            <div className="text-[11px] text-mute mt-1.5">verified proof</div>
+          </div>
+          {/* quiet quick links, right-aligned on wide screens */}
+          <div className="ml-auto hidden md:flex items-end gap-1.5">
+            {[
+              { to: "/connections", icon: "zap", color: "#3b82f6", label: "Connect" },
+              { to: "/leaderboard", icon: "trophy", color: "#22c55e", label: "Ranks" },
+              { to: `/u/${user.username}/resume`, icon: "file-text", color: "#a855f7", label: "Résumé" },
+            ].map((a) => (
+              <Link
+                key={a.to}
+                to={a.to}
+                className="inline-flex items-center gap-1.5 text-xs text-mute hover:text-ink rounded-full px-3 py-1.5 hover:bg-card2 transition"
+              >
+                <span style={{ color: a.color }}>
+                  <Icon name={a.icon} size={12} />
+                </span>
+                {a.label}
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* wide two-column app layout: main content + side rail, so the
@@ -297,6 +266,19 @@ export default function Dashboard() {
       <div className="grid md:grid-cols-2 gap-3">
         <WeekCard data-rise insights={insights} role={role} />
         <GoalsCard data-rise goals={goals} role={role} refresh={load} />
+      </div>
+
+      {/* productivity corner: plan the week, focus, then log it */}
+      <div data-rise className="flex items-center gap-3 pt-1">
+        <h2 className="text-[11px] uppercase tracking-[0.25em] text-brand font-semibold shrink-0">
+          Productivity corner
+        </h2>
+        <span className="h-px flex-1 bg-line/70" />
+        <span className="text-[11px] text-mute shrink-0">plan → focus → log</span>
+      </div>
+      <div data-rise className="grid md:grid-cols-[1.5fr_1fr] gap-3 !mt-3">
+        <WeekPlanner />
+        <FocusTimer />
       </div>
 
         {/* recent entries fill the main column and scroll inside */}
@@ -422,8 +404,8 @@ function GoalsCard({ goals, role, refresh, ...rest }) {
         )}
       </div>
       {goals.length === 0 && !adding && (
-        <p className="text-sm text-mute">
-          Set a weekly target, "{role.metrics[0].label.toLowerCase()}: 20/week", and watch the bar fill.
+        <p className="text-sm text-mute mb-3">
+          Set a weekly target and watch the bar fill.
         </p>
       )}
       <div className="space-y-3.5">
@@ -460,6 +442,25 @@ function GoalsCard({ goals, role, refresh, ...rest }) {
             </div>
           );
         })}
+
+        {/* ghost rows for metrics without a goal yet — tap to set one */}
+        {!adding &&
+          free.slice(0, goals.length ? 2 : 3).map((m) => (
+            <button
+              key={m.key}
+              onClick={() => {
+                setAdding(true);
+                setMetricKey(m.key);
+              }}
+              className="w-full text-left opacity-45 hover:opacity-90 transition"
+            >
+              <div className="flex justify-between text-xs mb-1.5">
+                <span>{m.label}</span>
+                <span className="text-mute">set a target →</span>
+              </div>
+              <div className="h-1.5 bg-line/60 rounded-full" />
+            </button>
+          ))}
       </div>
       {adding && (
         <form onSubmit={save} className="flex gap-2 mt-4">

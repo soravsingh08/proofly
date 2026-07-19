@@ -80,10 +80,21 @@ router.post("/login", authLimiter, (req, res, next) => {
   })(req, res, next);
 });
 
-// One-click demo login (landing "Try the live demo") — signs visitors
-// into the showcase account so they can explore without registering
+// One-click demo login — one showcase account per profession so
+// judges can explore every field (seeded via npm run seed-demo).
+// Strict whitelist: never logs into arbitrary accounts.
+const DEMO_USERS = {
+  developer: "arjun",
+  digital_marketing: "nisha",
+  sales: "rohan",
+  hr: "meera",
+  meta_ads: "kabir",
+  designer: "zoya",
+};
+
 router.post("/demo", authLimiter, async (req, res) => {
-  const username = process.env.DEMO_USERNAME || "arjun";
+  const role = String(req.body?.role || "developer");
+  const username = DEMO_USERS[role] || process.env.DEMO_USERNAME || "arjun";
   const user = await User.findOne({ username });
   if (!user) return res.status(503).json({ error: "Demo account is not set up" });
   res.json({ token: signToken(user), user: publicUser(user) });
