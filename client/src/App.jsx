@@ -16,6 +16,7 @@ import Leaderboard from "./pages/Leaderboard";
 import ImportMetaAds from "./pages/ImportMetaAds";
 import Connections from "./pages/Connections";
 import About from "./pages/About";
+import FocusLab from "./pages/FocusLab";
 import HowToUse from "./pages/HowToUse";
 import Resume from "./pages/Resume";
 
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="/log" element={<Protected><LogActivity /></Protected>} />
           <Route path="/connections" element={<Protected><Connections /></Protected>} />
           <Route path="/how-to-use" element={<Protected><HowToUse /></Protected>} />
+          <Route path="/focus" element={<Protected><FocusLab /></Protected>} />
           <Route path="/import" element={<Protected><ImportMetaAds /></Protected>} />
           {/* public — no auth */}
           <Route path="/u/:username" element={<PublicProfile />} />
