@@ -1,14 +1,18 @@
 import { useMemo, useState } from "react";
-import { buildYearGrid, localToday, prettyDate } from "../utils/dates";
+import { buildCalendarYearGrid, buildYearGrid, localToday, prettyDate } from "../utils/dates";
 
 const DOW_LABELS = ["", "Mon", "", "Wed", "", "Fri", ""];
 
 // GitHub-style contribution heatmap. `days` = [{date, total, level}].
 // `accent` tints levels via CSS var. `popDate` animates one cell (the
-// applause moment when a new log lights up).
-export default function Heatmap({ days = [], accent = "#c4633a", popDate = null }) {
+// applause moment when a new log lights up). `year` switches from the
+// rolling last-12-months view to one calendar year.
+export default function Heatmap({ days = [], accent = "#c4633a", popDate = null, year = null }) {
   const today = localToday();
-  const { weeks, monthLabels } = useMemo(() => buildYearGrid(today), [today]);
+  const { weeks, monthLabels } = useMemo(
+    () => (year ? buildCalendarYearGrid(year) : buildYearGrid(today)),
+    [today, year]
+  );
   const byDate = useMemo(() => {
     const m = new Map();
     for (const d of days) m.set(d.date, d);

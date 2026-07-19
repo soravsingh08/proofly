@@ -34,6 +34,36 @@ export function prettyDate(s) {
   });
 }
 
+// Full calendar-year grid (Jan 1 – Dec 31) for the year filter.
+// Future days render too — empty squares, waiting to be earned.
+export function buildCalendarYearGrid(year) {
+  const start = `${year}-01-01`;
+  const end = `${year}-12-31`;
+  let cursor = addDays(start, -dayOfWeek(start)); // snap to Sunday
+  const weeks = [];
+  const monthLabels = [];
+  let lastMonth = "";
+
+  while (cursor <= end) {
+    const week = [];
+    for (let i = 0; i < 7; i++) {
+      week.push({
+        date: cursor,
+        inRange: cursor >= start && cursor <= end,
+      });
+      cursor = addDays(cursor, 1);
+    }
+    const anchor = week.find((c) => c.date >= start) || week[0];
+    const m = monthShort(anchor.date);
+    if (m !== lastMonth) {
+      monthLabels.push({ col: weeks.length, label: m });
+      lastMonth = m;
+    }
+    weeks.push(week);
+  }
+  return { weeks, monthLabels };
+}
+
 // Build the 53-column GitHub grid ending on today's week (C3).
 // Returns { weeks: [[{date, inRange}]], monthLabels: [{col, label}] }
 export function buildYearGrid(todayStr) {

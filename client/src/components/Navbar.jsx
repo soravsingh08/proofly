@@ -46,9 +46,17 @@ export default function Navbar() {
             <NavLink to="/dashboard" className={linkCls}>Dashboard</NavLink>
             <NavLink to="/log" className={linkCls}>Log Activity</NavLink>
             <NavLink to="/leaderboard" className={linkCls}>Leaderboard</NavLink>
+            <NavLink to="/connections" className={linkCls}>
+              {user.role === "developer"
+                ? "Connect GitHub"
+                : user.role === "designer"
+                ? "Connect YouTube"
+                : "Connect Sheets"}
+            </NavLink>
             {role?.importable && (
               <NavLink to="/import" className={linkCls}>Import</NavLink>
             )}
+            <NavLink to="/how-to-use" className={linkCls}>How to use</NavLink>
           </>
         )}
         {!user && <NavLink to="/leaderboard" className={linkCls}>Leaderboard</NavLink>}

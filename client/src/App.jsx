@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-route
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import AssistantWidget from "./components/AssistantWidget";
+import { ToastHost } from "./components/toast";
 import { Spinner } from "./components/ui";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -12,6 +13,8 @@ import LogActivity from "./pages/LogActivity";
 import PublicProfile from "./pages/PublicProfile";
 import Leaderboard from "./pages/Leaderboard";
 import ImportMetaAds from "./pages/ImportMetaAds";
+import Connections from "./pages/Connections";
+import HowToUse from "./pages/HowToUse";
 import Resume from "./pages/Resume";
 
 // Route guards (edge cases A4, A5): logged out -> /login;
@@ -57,6 +60,8 @@ export default function App() {
           />
           <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
           <Route path="/log" element={<Protected><LogActivity /></Protected>} />
+          <Route path="/connections" element={<Protected><Connections /></Protected>} />
+          <Route path="/how-to-use" element={<Protected><HowToUse /></Protected>} />
           <Route path="/import" element={<Protected><ImportMetaAds /></Protected>} />
           {/* public — no auth */}
           <Route path="/u/:username" element={<PublicProfile />} />
@@ -66,6 +71,7 @@ export default function App() {
         </Routes>
         </PageFade>
         <AssistantWidget />
+        <ToastHost />
       </BrowserRouter>
     </AuthProvider>
   );

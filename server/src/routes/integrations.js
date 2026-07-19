@@ -1,7 +1,9 @@
 import { Router } from "express";
 import Contribution from "../models/Contribution.js";
+import Connection from "../models/Connection.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
-import { githubUserExists, syncGithubUser } from "../services/github.js";
+import { githubUserExists } from "../services/github.js";
+import { syncConnection } from "../services/connections.js";
 
 const router = Router();
 router.use(requireAuth, requireRole);
@@ -15,6 +17,9 @@ function requireDeveloper(req, res, next) {
   next();
 }
 
+// Save the username used to filter repo commits by author — in a
+// shared repo only YOUR commits should count. Changing it re-syncs
+// every connected repo with the new filter.
 router.put("/github", requireDeveloper, async (req, res) => {
   const username = String(req.body?.username || "").trim();
   if (!GH_RE.test(username))
@@ -27,25 +32,24 @@ router.put("/github", requireDeveloper, async (req, res) => {
   }
   req.user.githubUsername = username;
   await req.user.save();
-  res.json({ githubUsername: username });
-});
 
-router.post("/github/sync", requireDeveloper, async (req, res) => {
-  if (!req.user.githubUsername)
-    return res.status(400).json({ error: "Connect a GitHub username first" });
-  try {
-    res.json(await syncGithubUser(req.user));
-  } catch (err) {
-    console.error("github sync error:", err);
-    res.status(502).json({ error: "Sync failed, try again" });
+  let resynced = 0;
+  const repos = await Connection.find({ userId: req.user._id, type: "github_repo" });
+  for (const conn of repos) {
+    try {
+      await syncConnection(conn, req.user);
+      resynced++;
+    } catch (err) {
+      console.error(`re-sync failed (${conn.label}):`, err.message);
+    }
   }
+  res.json({ githubUsername: username, resynced });
 });
 
-// disconnect removes the synced history too — it came with the
-// connection, it leaves with it
 router.delete("/github", requireDeveloper, async (req, res) => {
   req.user.githubUsername = "";
   await req.user.save();
+  // legacy rows from the retired profile-events sync
   await Contribution.deleteMany({ userId: req.user._id, source: "github_sync" });
   res.json({ ok: true });
 });
