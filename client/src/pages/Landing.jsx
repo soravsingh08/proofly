@@ -116,7 +116,7 @@ function ProfileMock() {
           <StreakBadge streak={132} size="sm" />
         </div>
 
-        <div className="mt-6 overflow-x-auto">
+        <div className="mt-6 overflow-x-auto history-rail pb-1">
           <HeroGraph color="#22c55e" weeks={40} cell={10} />
         </div>
 
@@ -430,7 +430,7 @@ export default function Landing() {
             marketing, HR, ads and design professionals get a public
             proof-of-work profile, built one contribution at a time.
           </p>
-          <div className="flex justify-center gap-3 mt-10">
+          <div className="flex flex-wrap justify-center gap-3 mt-10">
             <Link to="/register" className="hero-cta">
               <Button className="px-7 py-3">Start your streak</Button>
             </Link>
@@ -438,8 +438,8 @@ export default function Landing() {
                 its CSS transition — the two must not share an element */}
             <span className="hero-cta">
               <DemoButton
-                label="Try the live demo"
-                className="border border-line rounded-lg px-7 py-3 text-sm text-ink hover:border-mute transition"
+                label="Explore demo accounts"
+                className="bg-brand/10 border border-brand/50 text-brand font-medium rounded-lg px-7 py-3 text-sm hover:bg-brand/20 transition"
               />
             </span>
           </div>
@@ -485,7 +485,7 @@ export default function Landing() {
             <svg
               viewBox="0 0 1200 130"
               preserveAspectRatio="none"
-              className="absolute inset-x-0 -top-2 w-full h-32 pointer-events-none"
+              className="hidden lg:block absolute inset-x-0 -top-2 w-full h-32 pointer-events-none"
               aria-hidden="true"
             >
               <path
@@ -496,7 +496,7 @@ export default function Landing() {
               />
             </svg>
 
-            <div className="flex gap-4 md:gap-5 overflow-x-auto lg:overflow-visible lg:justify-center pb-10 px-1">
+            <div className="flex gap-4 md:gap-5 overflow-x-auto history-rail lg:overflow-visible lg:justify-center pb-10 px-1">
               {ROLE_KEYS.map((k, i) => {
                 const role = ROLES[k];
                 // drops sampled from the rope's quadratic curve at each
@@ -504,14 +504,17 @@ export default function Landing() {
                 const drop = [5, 28, 40, 40, 28, 5][i % 6];
                 const tilt = [-7, -4, -1.5, 1.5, 4, 7][i % 6];
                 return (
+                  // drops and tilts only exist on lg+ where the rope is —
+                  // on mobile the cards ride a clean flat scroller
                   <button
                     key={k}
                     type="button"
                     onClick={() => setSpotRole(k)}
                     className="hang-card shrink-0 cursor-pointer text-left"
                     aria-label={`See top ${role.label}s`}
+                    style={{ "--drop": `${drop}px`, "--tilt": `${tilt}deg` }}
                   >
-                    <div style={{ transform: `translateY(${drop}px)` }}>
+                    <div className="lg:translate-y-[var(--drop)]">
                       <div
                         className="sway"
                         style={{
@@ -521,7 +524,7 @@ export default function Landing() {
                       >
                         {/* pivot at the peg, so tilting never slides the
                             clip off the rope — the card swings below it */}
-                        <div style={{ transform: `rotate(${tilt}deg)`, transformOrigin: "top center" }}>
+                        <div className="origin-top lg:rotate-[var(--tilt)]">
                           <div className="relative w-40 md:w-44">
                             {/* terracotta peg */}
                             <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10 flex justify-center pt-1 w-4 h-7 rounded-[4px] bg-brand shadow-md shadow-black/40">
