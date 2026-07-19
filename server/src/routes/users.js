@@ -54,7 +54,7 @@ router.post("/streak-freeze", requireAuth, requireRole, async (req, res) => {
   if (req.user.streakFreezes.includes(date))
     return res.status(400).json({ error: "That day is already frozen" });
   if (await Contribution.exists({ userId: req.user._id, date }))
-    return res.status(400).json({ error: "You logged that day — no freeze needed" });
+    return res.status(400).json({ error: "You logged that day, no freeze needed" });
   const used = req.user.streakFreezes.filter((d) => d.startsWith(date.slice(0, 7))).length;
   if (used >= FREEZES_PER_MONTH)
     return res.status(400).json({ error: `Only ${FREEZES_PER_MONTH} freezes per month` });

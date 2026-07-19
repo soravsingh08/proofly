@@ -72,7 +72,7 @@ export function fallbackSummary(user, summary) {
 
   const text =
     `${user.name} is a ${role.label} with ${summary.activeDays} active days of logged, ` +
-    `verifiable work on Proofly — currently on a ${summary.currentStreak}-day streak ` +
+    `verifiable work on Proofly, currently on a ${summary.currentStreak}-day streak ` +
     `(longest: ${summary.longestStreak} days). Across ${summary.totalContributions} logged ` +
     `contributions they have recorded ${metricPhrase || "consistent daily output"}. ` +
     `That day-in, day-out consistency is tracked on a public heatmap and can't be back-filled or faked.`;

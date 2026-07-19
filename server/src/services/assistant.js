@@ -18,7 +18,7 @@ const TOPICS = [
     keywords: ["what", "proofly", "about", "platform", "site", "website", "work", "how"],
     reply:
       `Proofly is like GitHub's contribution graph, but for every profession (${roleLabels}). ` +
-      `You log your real work daily, back it with evidence, and your public profile shows a heatmap, streaks and a score recruiters can trust — ${SITE.about.tagline.toLowerCase()}`,
+      `You log your real work daily, back it with evidence, and your public profile shows a heatmap, streaks and a score recruiters can trust. ${SITE.about.tagline}`,
     links: [{ label: "Leaderboard", to: "/leaderboard" }],
     id: "about",
   },
@@ -42,35 +42,35 @@ const TOPICS = [
   {
     keywords: ["role", "roles", "profession", "developer", "marketer", "sales", "designer", "hr", "choose"],
     reply:
-      `Proofly currently supports: ${roleLabels}. Each role has its own metrics and weights — you pick one when you join, and your dashboard, heatmap and score are built from it.`,
+      `Proofly currently supports: ${roleLabels}. Each role has its own metrics and weights. You pick one when you join, and your dashboard, heatmap and score are built from it.`,
     links: [{ label: "Choose role", to: "/choose-role" }],
     id: "roles",
   },
   {
     keywords: ["verify", "verification", "evidence", "proof", "trust", "fake", "real", "badge"],
     reply:
-      "Every entry has a verification level: self-reported (no proof), evidence (you attached a link), or imported/synced (pulled straight from a platform like Meta Ads or GitHub — unfakeable). Higher rungs earn more recruiter trust badges on your profile.",
+      "Every entry has a verification level: self-reported (no proof), evidence (you attached a link), or imported/synced (pulled straight from a platform like Meta Ads or GitHub, so it can't be faked). Higher rungs earn more recruiter trust badges on your profile.",
     links: [],
     id: "verification",
   },
   {
     keywords: ["streak", "streaks", "freeze", "freezes", "consistency", "miss", "missed", "gap"],
     reply:
-      "A streak is consecutive days with logged work — it's the platform's core signal because you can't fake showing up every day. Streak freezes can bridge an occasional missed day so one gap doesn't erase months of consistency.",
+      "A streak is consecutive days with logged work. It's the platform's core signal because you can't fake showing up every day. Streak freezes can bridge an occasional missed day so one gap doesn't erase months of consistency.",
     links: [{ label: "Dashboard", to: "/dashboard" }],
     id: "streaks",
   },
   {
     keywords: ["score", "points", "rank", "ranking", "leaderboard", "calculated", "weight", "top"],
     reply:
-      "Your score comes from weighted metrics (each role weights what matters — e.g. features count more than commits), active days and your streak. The leaderboard ranks everyone by it; consistency beats one-day spikes.",
+      "Your score comes from weighted metrics (each role weights what matters, e.g. features count more than commits), active days and your streak. The leaderboard ranks everyone by it; consistency beats one-day spikes.",
     links: [{ label: "Leaderboard", to: "/leaderboard" }],
     id: "score",
   },
   {
     keywords: ["heatmap", "graph", "green", "squares", "grid", "calendar", "contribution"],
     reply:
-      "The heatmap is your year at a glance — one cell per day, tinted by how much weighted work you logged. It's the same idea as GitHub's contribution graph, for your profession.",
+      "The heatmap is your year at a glance: one cell per day, tinted by how much weighted work you logged. It's the same idea as GitHub's contribution graph, for your profession.",
     links: [{ label: "Dashboard", to: "/dashboard" }],
     id: "heatmap",
   },
@@ -84,7 +84,7 @@ const TOPICS = [
   {
     keywords: ["resume", "cv", "export", "pdf", "print", "summary", "ai", "recruiter", "share", "profile", "public", "link"],
     reply:
-      "Your profile is public at /u/your-username — share it like a GitHub link. From there recruiters can open a printable résumé view, and you can generate an AI career summary built from your logged proof, not self-description.",
+      "Your profile is public at /u/your-username, share it like a GitHub link. From there recruiters can open a printable résumé view, and you can generate an AI career summary built from your logged proof, not self-description.",
     links: [{ label: "Leaderboard (find profiles)", to: "/leaderboard" }],
     id: "profile",
   },
@@ -98,7 +98,7 @@ const TOPICS = [
   {
     keywords: ["help", "support", "bug", "problem", "contact", "team", "who", "made", "built", "founder"],
     reply:
-      `Proofly is built by ${SITE.team.map((t) => t.name).join(" and ")}. Something broken or confusing? Use the support option in your account to reach us — topics: ${SITE.supportTopics.join(", ")}.`,
+      `Proofly is built by ${SITE.team.map((t) => t.name).join(" and ")}. Something broken or confusing? Use the support option in your account to reach us. Topics: ${SITE.supportTopics.join(", ")}.`,
     links: [],
     id: "support",
   },

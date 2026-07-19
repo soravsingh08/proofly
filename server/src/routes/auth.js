@@ -80,6 +80,15 @@ router.post("/login", authLimiter, (req, res, next) => {
   })(req, res, next);
 });
 
+// One-click demo login (landing "Try the live demo") — signs visitors
+// into the showcase account so they can explore without registering
+router.post("/demo", authLimiter, async (req, res) => {
+  const username = process.env.DEMO_USERNAME || "arjun";
+  const user = await User.findOne({ username });
+  if (!user) return res.status(503).json({ error: "Demo account is not set up" });
+  res.json({ token: signToken(user), user: publicUser(user) });
+});
+
 router.get("/me", requireAuth, (req, res) => {
   res.json({ user: publicUser(req.user) });
 });

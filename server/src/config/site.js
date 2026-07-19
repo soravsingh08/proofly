@@ -2,8 +2,8 @@
 // roles.js: pages are data. Edit here, client just renders.
 export const SITE = {
   about: {
-    title: "Proofly — GitHub for Every Profession",
-    tagline: "We rank consistency, not claims — you can't fake showing up every day.",
+    title: "Proofly | GitHub for Every Profession",
+    tagline: "We rank consistency, not claims. You can't fake showing up every day.",
     story:
       "Developers have GitHub's contribution graph and recruiters trust it. " +
       "Sales, marketing, HR, ads and design professionals have nothing but " +

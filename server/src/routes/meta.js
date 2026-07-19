@@ -26,7 +26,7 @@ function requireMetaAds(req, res, next) {
 router.get("/oauth-url", requireAuth, requireRole, requireMetaAds, (req, res) => {
   if (!metaConfigured())
     return res.status(503).json({
-      error: "Meta is not configured — set META_APP_ID / META_APP_SECRET",
+      error: "Meta is not configured, set META_APP_ID / META_APP_SECRET",
     });
   const state = jwt.sign({ id: req.user._id, meta: true }, process.env.JWT_SECRET, {
     expiresIn: "10m",

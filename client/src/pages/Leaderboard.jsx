@@ -4,7 +4,7 @@ import gsap from "gsap";
 import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { ROLES, ROLE_KEYS } from "../config/roles";
-import { AmbientGlow, Card, Spinner, Empty } from "../components/ui";
+import { Card, Spinner, Empty } from "../components/ui";
 import { Icon } from "../components/icons";
 
 const MEDALS = ["#e8b923", "#b8bcc4", "#c98a56"];
@@ -86,11 +86,10 @@ export default function Leaderboard() {
 
   return (
     <div ref={rootRef} className="relative max-w-3xl mx-auto px-4 py-8">
-      <AmbientGlow />
       <div data-rise>
         <h1 className="text-2xl font-bold mb-1">Leaderboard</h1>
         <p className="text-sm text-mute mb-6">
-          Ranked by consistency — you can't fake showing up every day.
+          Ranked by consistency. You can't fake showing up every day.
         </p>
       </div>
 
@@ -118,20 +117,25 @@ export default function Leaderboard() {
           placeholder={`Search ${activeRole.label.toLowerCase()}s by name…`}
           className="flex-1 min-w-[200px] bg-card border border-line rounded-lg px-3 py-2 text-sm outline-none focus:border-brand transition"
         />
-        {STREAK_CHIPS.map((c) => (
-          <button
-            key={c.value}
-            onClick={() => setMinStreak(c.value)}
-            className={`text-[11px] rounded-full px-2.5 py-1.5 border transition inline-flex items-center gap-1 ${
-              minStreak === c.value
-                ? "border-brand text-brand bg-brand/10"
-                : "border-line text-mute hover:text-ink"
-            }`}
-          >
-            {c.value > 0 && <Icon name="flame" size={10} />}
-            {c.label}
-          </button>
-        ))}
+        {/* segmented streak filter — one solid control, not floating pills */}
+        <div className="inline-flex border border-line rounded-lg overflow-hidden">
+          {STREAK_CHIPS.map((c, idx) => (
+            <button
+              key={c.value}
+              onClick={() => setMinStreak(c.value)}
+              className={`text-[11px] px-3 py-2 transition inline-flex items-center gap-1 ${
+                idx > 0 ? "border-l border-line" : ""
+              } ${
+                minStreak === c.value
+                  ? "bg-brand/10 text-brand"
+                  : "text-mute hover:text-ink"
+              }`}
+            >
+              {c.value > 0 && <Icon name="flame" size={10} />}
+              {c.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {rows === null ? (
@@ -143,58 +147,66 @@ export default function Leaderboard() {
           hint={
             searching
               ? "Try a different name or a lower streak filter."
-              : "Claim the #1 spot — start logging your work."
+              : "Claim the #1 spot. Start logging your work."
           }
         />
       ) : (
         <div ref={listRef}>
-          {/* top-3 podium */}
+          {/* top-3 — one solid banded strip, ranks read left to right */}
           {podium && (
-            <div className="grid grid-cols-3 gap-3 mb-4 items-end">
-              {[podium[1], podium[0], podium[2]].map((r, gi) => {
-                const rank = gi === 1 ? 0 : gi === 0 ? 1 : 2;
-                const first = rank === 0;
-                return (
-                  <Link
-                    key={r.username}
-                    to={`/u/${r.username}`}
-                    className={`lb-item block text-center bg-card border rounded-2xl px-3 hover:-translate-y-1 transition ${
-                      first ? "py-6" : "py-4"
-                    }`}
-                    style={{ borderColor: `${MEDALS[rank]}45` }}
-                  >
-                    <Icon name="trophy" size={first ? 20 : 15} style={{ color: MEDALS[rank] }} />
-                    <div
-                      className={`mx-auto rounded-full flex items-center justify-center font-bold my-2 ${
-                        first ? "w-14 h-14 text-lg" : "w-11 h-11 text-sm"
+            <div className="mb-4 grid sm:grid-cols-3 bg-card border border-line rounded-xl overflow-hidden">
+              {podium.map((r, i) => (
+                <Link
+                  key={r.username}
+                  to={`/u/${r.username}`}
+                  className={`lb-item relative block p-5 hover:bg-card2 transition ${
+                    i > 0 ? "border-t sm:border-t-0 sm:border-l border-line" : ""
+                  }`}
+                >
+                  {/* thin medal band instead of a glowing border */}
+                  <div
+                    className="absolute inset-x-0 top-0 h-[2px]"
+                    style={{ background: MEDALS[i] }}
+                  />
+                  <div className="flex items-baseline justify-between">
+                    <span
+                      className={`font-semibold tabular-nums leading-none ${
+                        i === 0 ? "text-4xl" : "text-2xl"
                       }`}
-                      style={{ background: `${activeRole.color}22`, color: activeRole.color }}
+                      style={{ color: MEDALS[i] }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-sm font-bold text-orange-400">
+                      <Icon name="flame" size={13} /> {r.currentStreak}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 mt-4">
+                    <span
+                      className="w-10 h-10 rounded-lg border flex items-center justify-center text-xs font-bold shrink-0"
+                      style={{
+                        color: activeRole.color,
+                        borderColor: `${activeRole.color}55`,
+                      }}
                     >
                       {initials(r.name)}
-                    </div>
-                    <div className={`font-semibold truncate ${first ? "text-base" : "text-sm"}`}>
-                      {r.name}
-                    </div>
-                    <div className="text-[11px] text-mute truncate mb-2">@{r.username}</div>
-                    <div
-                      className={`inline-flex items-center gap-1 font-bold text-orange-400 ${
-                        first ? "text-xl" : "text-base"
-                      }`}
-                    >
-                      <Icon name="flame" size={first ? 16 : 13} /> {r.currentStreak}
-                    </div>
-                    <div className="text-[10.5px] text-mute mt-1">
-                      {r.activeDays} active days
-                    </div>
-                  </Link>
-                );
-              })}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold truncate">{r.name}</span>
+                      <span className="block text-[11px] text-mute truncate">@{r.username}</span>
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-mute mt-3">
+                    {r.activeDays} active days · best {r.longestStreak}
+                  </div>
+                </Link>
+              ))}
             </div>
           )}
 
           {/* the rest */}
           {listRows.length > 0 && (
-            <Card className="p-0 overflow-hidden">
+            <Card className="p-0 overflow-hidden !rounded-xl">
               {listRows.map((r, i) => {
                 const rank = (podium ? 3 : 0) + i + 1;
                 const isYou = user?.username === r.username;
@@ -206,10 +218,10 @@ export default function Leaderboard() {
                       isYou ? "bg-brand/5" : ""
                     }`}
                   >
-                    <span className="w-6 text-xs text-mute text-center shrink-0">{rank}</span>
+                    <span className="w-6 text-xs text-mute text-center tabular-nums shrink-0">{rank}</span>
                     <span
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0"
-                      style={{ background: `${activeRole.color}1c`, color: activeRole.color }}
+                      className="w-8 h-8 rounded-md border flex items-center justify-center text-[11px] font-bold shrink-0"
+                      style={{ color: activeRole.color, borderColor: `${activeRole.color}45` }}
                     >
                       {initials(r.name)}
                     </span>

@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
+import DemoButton from "../components/DemoButton";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
@@ -96,7 +97,7 @@ function ProfileMock() {
     <div data-reveal className="relative mx-auto max-w-3xl mt-20">
       {/* hand-drawn annotation, GitHub-style */}
       <div className="hidden lg:block absolute -left-40 -top-10 w-32 text-left">
-        <span className="text-sm text-mute italic">this could be you —</span>
+        <span className="text-sm text-mute italic">this could be you</span>
         <DoodleArrow className="w-20 mt-2 ml-10" />
       </div>
       <div className="bg-card border border-line rounded-2xl p-6 md:p-8 text-left shadow-2xl shadow-black/50">
@@ -172,7 +173,7 @@ function ResumeMock() {
           </div>
           <p className="text-[11px] leading-relaxed">
             Arjun is a Software Developer with 365 active days of logged,
-            verifiable work — currently on a 132-day streak. Across 1,124
+            verifiable work, currently on a 132-day streak. Across 1,124
             contributions he has shipped 53 features and fixed 233 bugs,
             with output backed by verified imports.
           </p>
@@ -365,19 +366,19 @@ export default function Landing() {
         });
       });
 
-      // role cards rise with a stagger — batched so a whole row
-      // animates as one smooth group instead of per-card triggers
-      gsap.set(".role-card", { y: 36, opacity: 0 });
-      ScrollTrigger.batch(".role-card", {
+      // clothesline polaroids drop in one after another, then the CSS
+      // sway takes over (it owns rotate; GSAP only touches y/opacity)
+      gsap.set(".hang-card", { y: -30, opacity: 0 });
+      ScrollTrigger.batch(".hang-card", {
         start: "top 90%",
         once: true,
         onEnter: (batch) =>
           gsap.to(batch, {
             y: 0,
             opacity: 1,
-            duration: 0.7,
-            ease: "power3.out",
-            stagger: 0.09,
+            duration: 0.8,
+            ease: "bounce.out",
+            stagger: 0.1,
             overwrite: true,
           }),
       });
@@ -425,7 +426,7 @@ export default function Landing() {
             </span>
           </h1>
           <p className="hero-sub text-mute mt-8 max-w-xl mx-auto text-base md:text-lg leading-relaxed">
-            Don't tell recruiters what you did — prove it, every day. Sales,
+            Don't tell recruiters what you did. Prove it, every day. Sales,
             marketing, HR, ads and design professionals get a public
             proof-of-work profile, built one contribution at a time.
           </p>
@@ -433,11 +434,14 @@ export default function Landing() {
             <Link to="/register" className="hero-cta">
               <Button className="px-7 py-3">Start your streak</Button>
             </Link>
-            <Link to="/u/arjun" className="hero-cta">
-              <button className="border border-line rounded-lg px-7 py-3 text-sm text-ink hover:border-mute transition">
-                See a live profile
-              </button>
-            </Link>
+            {/* wrapper carries the GSAP entrance class; the button keeps
+                its CSS transition — the two must not share an element */}
+            <span className="hero-cta">
+              <DemoButton
+                label="Try the live demo"
+                className="border border-line rounded-lg px-7 py-3 text-sm text-ink hover:border-mute transition"
+              />
+            </span>
           </div>
 
           {/* the "product screenshot", GitHub-style */}
@@ -445,7 +449,7 @@ export default function Landing() {
         </section>
 
         {/* ============ stats band ============ */}
-        <section className="border-y border-line my-20 py-14 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <section className="border-y border-line mt-8 mb-6 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
           {STATS.map((s) => (
             <div
               key={s.label}
@@ -462,83 +466,86 @@ export default function Landing() {
           ))}
         </section>
 
-        {/* ============ feature: verified proof ============ */}
-        <section className="grid md:grid-cols-2 gap-12 items-center py-16">
-          <div data-reveal>
-            <Eyebrow>Verified, not claimed</Eyebrow>
-            <h2 className="text-4xl md:text-5xl font-medium tracking-tight leading-tight">
-              A resume says it.
-              <br />
-              Proofly proves it.
-            </h2>
-            <p className="text-mute mt-5 leading-relaxed">
-              Every contribution carries its verification level — synced
-              straight from the Meta Ads API, imported from real exports, or
-              backed by evidence. Recruiters see exactly how much to trust
-              each number. That's the difference between a claim and a proof.
-            </p>
-          </div>
-          <div data-reveal className="bg-card border border-line rounded-2xl p-6 space-y-4">
-            {[
-              ["synced", "Pulled from the Meta API — impossible to fake"],
-              ["imported", "Parsed from a real platform export"],
-              ["evidence", "Screenshot or link attached"],
-            ].map(([level, desc]) => (
-              <div key={level} className="flex items-center justify-between gap-4 bg-card2 border border-line rounded-xl px-4 py-3.5">
-                <VerificationBadge level={level} />
-                <span className="text-xs text-mute text-right">{desc}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* ============ feature: every profession ============ */}
-        <section className="py-16">
+        <section className="pt-8 pb-16">
           <div data-reveal className="text-center max-w-2xl mx-auto mb-12">
             <Eyebrow>Beyond developers</Eyebrow>
             <h2 className="text-4xl md:text-5xl font-medium tracking-tight leading-tight">
               A contribution graph for every craft
             </h2>
             <p className="text-mute mt-5 leading-relaxed">
-              Calls closed, campaigns shipped, hires made, designs delivered —
-              if it's real work, it lights up a square. Each role gets its own
+              Calls closed, campaigns shipped, hires made, designs delivered.
+              If it's real work, it lights up a square. Each role gets its own
               metrics and its own color.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {ROLE_KEYS.map((k) => {
-              const role = ROLES[k];
-              // outer div: GSAP reveal target — inner div: hover lift,
-              // so the two transforms never fight over each other
-              return (
-                <button
-                  key={k}
-                  type="button"
-                  onClick={() => setSpotRole(k)}
-                  className="role-card text-left"
-                >
-                <div className="h-full bg-card border border-line rounded-2xl p-5 hover:border-mute/50 hover:-translate-y-1 transition duration-300">
-                  <div className="flex items-center gap-2.5 mb-3">
-                    <span
-                      className="w-8 h-8 rounded-lg border flex items-center justify-center"
-                      style={{
-                        borderColor: `${role.color}55`,
-                        background: `${role.color}1a`,
-                        color: role.color,
-                      }}
-                    >
-                      <Icon name={role.icon} size={15} />
-                    </span>
-                    <span className="font-medium text-sm">{role.label}</span>
+          {/* polaroids of every department, pegged to a sagging line,
+              swaying like a breeze is moving through them */}
+          <div className="relative pt-8">
+            <svg
+              viewBox="0 0 1200 130"
+              preserveAspectRatio="none"
+              className="absolute inset-x-0 -top-2 w-full h-32 pointer-events-none"
+              aria-hidden="true"
+            >
+              <path
+                d="M-20 24 Q600 124 1220 24"
+                stroke="#2e2e2e"
+                strokeWidth="2"
+                fill="none"
+              />
+            </svg>
+
+            <div className="flex gap-4 md:gap-5 overflow-x-auto lg:overflow-visible lg:justify-center pb-10 px-1">
+              {ROLE_KEYS.map((k, i) => {
+                const role = ROLES[k];
+                // drops sampled from the rope's quadratic curve at each
+                // peg's x position, so every clip sits ON the line
+                const drop = [5, 28, 40, 40, 28, 5][i % 6];
+                const tilt = [-7, -4, -1.5, 1.5, 4, 7][i % 6];
+                return (
+                  <div key={k} className="hang-card shrink-0">
+                    <div style={{ transform: `translateY(${drop}px)` }}>
+                      <div
+                        className="sway"
+                        style={{
+                          "--sway-dur": `${5.2 + i * 0.6}s`,
+                          "--sway-delay": `${i * 0.35}s`,
+                        }}
+                      >
+                        {/* pivot at the peg, so tilting never slides the
+                            clip off the rope — the card swings below it */}
+                        <div style={{ transform: `rotate(${tilt}deg)`, transformOrigin: "top center" }}>
+                          <div className="relative w-40 md:w-44">
+                            {/* terracotta peg */}
+                            <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10 flex justify-center pt-1 w-4 h-7 rounded-[4px] bg-brand shadow-md shadow-black/40">
+                              <span className="w-1.5 h-1.5 rounded-full bg-bg" />
+                            </span>
+                            {/* white polaroid, photo = the role's graph */}
+                            <div className="bg-[#f5f1e9] rounded-xl p-2 pb-3 shadow-xl shadow-black/40">
+                              <div className="bg-[#131311] rounded-lg p-2.5 overflow-hidden">
+                                <HeroGraph color={role.color} weeks={9} cell={7} />
+                              </div>
+                              <div className="px-1.5 pt-2.5">
+                                <div className="flex items-center gap-1.5 text-[#1c1814] font-semibold text-[13px]">
+                                  <span style={{ color: role.color }}>
+                                    <Icon name={role.icon} size={13} />
+                                  </span>
+                                  {role.label}
+                                </div>
+                                <div className="text-[#8a7f72] text-[10.5px] mt-0.5 leading-snug">
+                                  {role.metrics.slice(0, 3).map((m) => m.label).join(" · ")}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <HeroGraph color={role.color} />
-                  <p className="text-[11px] text-mute mt-3">
-                    {role.metrics.map((m) => m.label).join(" · ")}
-                  </p>
-                </div>
-                </button>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
 
           {/* role spotlight — pops up on card click; portaled to body so
@@ -742,7 +749,7 @@ export default function Landing() {
             </h2>
             <p className="text-mute mt-5 leading-relaxed">
               One log a day keeps the flame burning. Miss a day, lose the
-              streak — the same loop that makes GitHub addictive, now working
+              streak. It's the same loop that makes GitHub addictive, now working
               for your whole career. Climb the leaderboard while you're at it.
             </p>
           </div>
@@ -784,7 +791,7 @@ export default function Landing() {
               writes itself
             </h2>
             <p className="text-mute mt-5 leading-relaxed">
-              Every logged day becomes a line on a recruiter-ready résumé — an
+              Every logged day becomes a line on a recruiter-ready résumé: an
               AI summary written from your real numbers, your streaks and your
               verified imports. Download it as a PDF in one click, or just
               share the live link: it keeps itself up to date as you keep
@@ -797,6 +804,36 @@ export default function Landing() {
             </div>
           </div>
           <ResumeMock />
+        </section>
+
+        {/* ============ feature: verified proof ============ */}
+        <section className="grid md:grid-cols-2 gap-12 items-center py-16">
+          <div data-reveal>
+            <Eyebrow>Verified, not claimed</Eyebrow>
+            <h2 className="text-4xl md:text-5xl font-medium tracking-tight leading-tight">
+              A resume says it.
+              <br />
+              Proofly proves it.
+            </h2>
+            <p className="text-mute mt-5 leading-relaxed">
+              Every contribution carries its verification level: synced
+              straight from the Meta Ads API, imported from real exports, or
+              backed by evidence. Recruiters see exactly how much to trust
+              each number. That's the difference between a claim and a proof.
+            </p>
+          </div>
+          <div data-reveal className="bg-card border border-line rounded-2xl p-6 space-y-4">
+            {[
+              ["synced", "Pulled from the Meta API, impossible to fake"],
+              ["imported", "Parsed from a real platform export"],
+              ["evidence", "Screenshot or link attached"],
+            ].map(([level, desc]) => (
+              <div key={level} className="flex items-center justify-between gap-4 bg-card2 border border-line rounded-xl px-4 py-3.5">
+                <VerificationBadge level={level} />
+                <span className="text-xs text-mute text-right">{desc}</span>
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* ============ final CTA ============ */}
@@ -843,7 +880,7 @@ export default function Landing() {
             </div>
             <p className="text-sm text-mute mt-4 leading-relaxed">
               The contribution graph for every profession. Log real work, keep
-              the streak, and let recruiters see proof — not promises.
+              the streak, and let recruiters see proof, not promises.
             </p>
           </div>
           <div className="flex gap-16 sm:gap-24">
@@ -891,7 +928,7 @@ export default function Landing() {
 
         <div className="border-t border-line mt-6">
           <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-mute">
-            <span>© 2026 Proofly — consistency you can't fake.</span>
+            <span>© 2026 Proofly. Consistency you can't fake.</span>
             <span>Built in 24 hours</span>
           </div>
         </div>

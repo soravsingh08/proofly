@@ -73,7 +73,7 @@ export const ROLES = {
 export const ROLE_KEYS = Object.keys(ROLES);
 
 export function formatMetric(value, type) {
-  if (value == null) return "—";
+  if (value == null) return "-";
   if (type === "currency")
     return "₹" + Number(value).toLocaleString("en-IN");
   if (type === "percent") return `${value}%`;

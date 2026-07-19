@@ -90,13 +90,15 @@ router.get("/:username", async (req, res) => {
   if (!user || !user.role)
     return res.status(404).json({ error: "Profile not found" });
 
-  const [summary, totals, recent] = await Promise.all([
+  const [summary, totals, recent, verifiedCount, totalCount] = await Promise.all([
     summaryFor(user),
     dailyTotals(user._id),
     Contribution.find({ userId: user._id })
       .sort({ date: -1, createdAt: -1 })
       .limit(10)
       .select("date metrics note verification source evidenceUrl"),
+    Contribution.countDocuments({ userId: user._id, verification: { $ne: "self_reported" } }),
+    Contribution.countDocuments({ userId: user._id }),
   ]);
 
   res.json({
@@ -108,7 +110,11 @@ router.get("/:username", async (req, res) => {
       joined: user.createdAt,
     },
     aiSummary: user.aiSummary?.text ? user.aiSummary : null,
-    summary,
+    summary: {
+      ...summary,
+      // the trust number recruiters care about most
+      verifiedPct: totalCount ? Math.round((verifiedCount / totalCount) * 100) : 0,
+    },
     badges: badgesFor(summary).filter((b) => b.earned),
     heatmap: heatmapPayload(totals),
     recent,

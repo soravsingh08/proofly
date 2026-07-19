@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { ROLES } from "../config/roles";
 import { Button, Input, PasswordInput } from "../components/ui";
 import AuthLayout from "../components/AuthLayout";
+import DemoButton, { OrDivider } from "../components/DemoButton";
 
 export default function Register() {
   const { login } = useAuth();
@@ -73,6 +74,11 @@ export default function Register() {
           {busy ? "Creating…" : "Create account"}
         </Button>
       </form>
+      <OrDivider />
+      <DemoButton
+        label="Just exploring? Try the demo account"
+        className="w-full border border-line rounded-xl px-4 py-2.5 text-sm text-ink hover:border-mute transition"
+      />
     </AuthLayout>
   );
 }

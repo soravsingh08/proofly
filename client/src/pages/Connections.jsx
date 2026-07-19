@@ -3,7 +3,7 @@ import gsap from "gsap";
 import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { ROLES } from "../config/roles";
-import { AmbientGlow, Button, Card, Spinner } from "../components/ui";
+import { Button, Card, Spinner } from "../components/ui";
 import { Icon } from "../components/icons";
 import { toast } from "../components/toast";
 
@@ -46,11 +46,10 @@ export default function Connections() {
 
   return (
     <div ref={rootRef} className="relative max-w-3xl mx-auto px-4 py-10">
-      <AmbientGlow />
       <div data-rise>
         <h1 className="text-2xl font-bold mb-1">Connections</h1>
         <p className="text-sm text-mute mb-6">
-          Connect a source once — we fetch your work every day and log it as{" "}
+          Connect a source once, we fetch your work every day and log it as{" "}
           <span className="text-blue-300">✓ verified</span>. No more manual entries.
         </p>
       </div>
@@ -85,7 +84,7 @@ function ConnectionRow({ conn, refresh }) {
     setBusy(true);
     try {
       const r = await api.post(`/connections/${conn._id}/sync`);
-      toast(`${conn.label} — synced ${r.data.synced} days`);
+      toast(`${conn.label}, synced ${r.data.synced} days`);
       refresh();
     } catch (err) {
       toast(errMsg(err, "Sync failed"), "error");
@@ -147,7 +146,7 @@ function RepoCard({ refresh }) {
     setBusy(true);
     try {
       const r = await api.post("/connections", { type: "github_repo", repo: repo.trim() });
-      toast(`${repo.trim()} connected — synced ${r.data.synced} days of commits`);
+      toast(`${repo.trim()} connected, synced ${r.data.synced} days of commits`);
       setRepo("");
       refresh();
     } catch (err) {
@@ -161,7 +160,7 @@ function RepoCard({ refresh }) {
     <SourceCard
       icon="github"
       title="Connect a repository"
-      hint="Paste a public repo as owner/name — we count your commits daily. Connect as many repos as you ship to."
+      hint="Paste a public repo as owner/name, we count your commits daily. Connect as many repos as you ship to."
     >
       <form onSubmit={add} className="flex gap-2">
         <input
@@ -229,7 +228,7 @@ function YoutubeCard({ refresh }) {
     setBusy(true);
     try {
       const r = await api.post("/connections", { type: "youtube", url: url.trim() });
-      toast(`Channel connected — synced ${r.data.synced} days of uploads`);
+      toast(`Channel connected, synced ${r.data.synced} days of uploads`);
       setUrl("");
       refresh();
     } catch (err) {
@@ -243,7 +242,7 @@ function YoutubeCard({ refresh }) {
     <SourceCard
       icon="play"
       title="Connect your YouTube channel"
-      hint="Paste a channel link containing the UC… id (youtube.com/channel/UC…) — new uploads count as videos."
+      hint="Paste a channel link containing the UC… id (youtube.com/channel/UC…), new uploads count as videos."
     >
       <form onSubmit={add} className="flex gap-2">
         <input
@@ -270,7 +269,7 @@ function SheetCard({ refresh, roleLabel }) {
     setBusy(true);
     try {
       const r = await api.post("/connections", { type: "sheet", url: url.trim() });
-      toast(`Sheet connected — synced ${r.data.synced} days of activity`);
+      toast(`Sheet connected, synced ${r.data.synced} days of activity`);
       setUrl("");
       refresh();
     } catch (err) {
@@ -284,7 +283,7 @@ function SheetCard({ refresh, roleLabel }) {
     <SourceCard
       icon="table"
       title="Connect a Google Sheet"
-      hint={`Works for every role — keep filling your sheet, we fetch and log it daily. The sheet must be shared as "Anyone with the link" or published to the web. Need the column format? Grab the CSV template from your dashboard's Download proof-of-work button.`}
+      hint={`Works for every role, keep filling your sheet, we fetch and log it daily. The sheet must be shared as "Anyone with the link" or published to the web. Need the column format? Grab the CSV template from your dashboard's Download proof-of-work button.`}
     >
       <form onSubmit={add} className="flex gap-2">
         <input

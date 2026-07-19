@@ -23,7 +23,7 @@ router.post("/summary", requireAuth, requireRole, async (req, res) => {
     ]);
     if (summary.totalContributions === 0)
       return res.status(400).json({
-        error: "Log some work first — the AI summarizes proof, not promises",
+        error: "Log some work first. The AI summarizes proof, not promises",
       });
 
     let result;
@@ -41,7 +41,7 @@ router.post("/summary", requireAuth, requireRole, async (req, res) => {
     res.json({ aiSummary: req.user.aiSummary });
   } catch (err) {
     console.error("ai summary error:", err.message);
-    res.status(502).json({ error: "AI generation failed — try again" });
+    res.status(502).json({ error: "AI generation failed, try again" });
   }
 });
 
@@ -57,7 +57,7 @@ router.post("/assistant", assistantLimiter, async (req, res) => {
     res.json(await answerQuestion(message, history));
   } catch (err) {
     console.error("assistant error:", err.message);
-    res.status(500).json({ error: "Assistant hiccuped — try again" });
+    res.status(500).json({ error: "Assistant hiccuped, try again" });
   }
 });
 

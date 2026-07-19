@@ -49,7 +49,7 @@ const PANELS = {
   login: {
     heading: ["Welcome back", "to your graph."],
     caption:
-      "Every day you showed up is still here — pick the streak up right where you left it.",
+      "Every day you showed up is still here. Pick the streak up right where you left it.",
     accent: "#c4633a",
     cardName: "Arjun Mehta",
     cardMeta: "@arjun · Software Developer",
@@ -58,7 +58,7 @@ const PANELS = {
   register: {
     heading: ["Your work deserves", "a record."],
     caption:
-      "Start today — one logged day becomes square one of your public proof.",
+      "Start today. One logged day becomes square one of your public proof.",
     accent: "#22c55e",
     cardName: "This could be you",
     cardMeta: "proofly.app/u/you",
