@@ -61,7 +61,7 @@ function normalizeDate(s) {
 export async function fetchSheetRows(url, role) {
   const r = await fetch(toCsvUrl(url), { redirect: "follow" });
   if (!r.ok) {
-    const err = new Error("Sheet not reachable — is it shared or published to the web?");
+    const err = new Error("Sheet not reachable, is it shared or published to the web?");
     err.friendly = true;
     throw err;
   }
@@ -98,7 +98,7 @@ export async function fetchYoutubeUploads(channelId) {
     headers: { "User-Agent": "proofly" },
   });
   if (!r.ok) {
-    const err = new Error("Channel feed not reachable — check the channel ID");
+    const err = new Error("Channel feed not reachable, check the channel ID");
     err.friendly = true;
     throw err;
   }

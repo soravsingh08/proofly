@@ -85,7 +85,7 @@ export default function LogActivity() {
     setError("");
     try {
       await api.post("/contributions", { date, metrics, note, evidenceUrl });
-      toast(`Contribution saved — ${prettyDate(date)} is on the graph`);
+      toast(`Contribution saved: ${prettyDate(date)} is on the graph`);
       // pass logged date so the dashboard pops that square
       navigate("/dashboard", { state: { popDate: date } });
     } catch (err) {
@@ -122,7 +122,7 @@ export default function LogActivity() {
               <Icon name="flame" size={15} className="text-brand" />
               {insights.daysSinceLastLog === 0 ? (
                 <span className="text-mute">
-                  <span className="text-ink font-medium">{insights.currentStreak}-day streak</span> — today's
+                  <span className="text-ink font-medium">{insights.currentStreak}-day streak</span>, today's
                   already logged, stack more on top.
                 </span>
               ) : (
@@ -223,7 +223,7 @@ export default function LogActivity() {
                   className="w-full bg-bg border border-line rounded-lg px-3 py-2 text-sm outline-none focus:border-brand transition"
                 />
                 <span className="block text-[11px] text-mute mt-1.5">
-                  Entries with a link show as <span className="text-amber-300">Evidence</span> — recruiters
+                  Entries with a link show as <span className="text-amber-300">Evidence</span>, recruiters
                   trust proof over claims.
                 </span>
               </label>
@@ -257,7 +257,7 @@ export default function LogActivity() {
           <div className="history-rail space-y-2 flex-1 min-h-0 max-h-[60vh] lg:max-h-none overflow-y-auto pr-1.5">
           {history.length === 0 ? (
             <p className="text-xs text-mute px-1">
-              Nothing yet — your first log will show up here.
+              Nothing yet, your first log will show up here.
             </p>
           ) : (
             history.map((c) => (
@@ -323,7 +323,7 @@ function LogDetail({ entry, role, onClose, refresh }) {
     setBusy(true);
     try {
       await api.put(`/contributions/${entry._id}/evidence`, { evidenceUrl: proofUrl.trim() });
-      toast("Proof attached — entry upgraded to Evidence");
+      toast("Proof attached, entry upgraded to Evidence");
       refresh();
       onClose();
     } catch (err) {
@@ -395,7 +395,7 @@ function LogDetail({ entry, role, onClose, refresh }) {
           <div className="flex items-center gap-2">
             <Icon name="zap" size={12} className="text-brand" />
             <span>
-              <span className="text-ink font-medium">{entry.weightedTotal} impact points</span> — drives
+              <span className="text-ink font-medium">{entry.weightedTotal} impact points</span>, drives
               your heatmap intensity and score
             </span>
           </div>
@@ -445,7 +445,7 @@ function LogDetail({ entry, role, onClose, refresh }) {
                 onClick={() => setAddingProof(true)}
                 className="w-full border border-line rounded-lg py-2 text-xs text-mute hover:text-ink hover:border-brand transition inline-flex items-center justify-center gap-1.5"
               >
-                <Icon name="paperclip" size={11} /> Add proof — upgrade to Evidence
+                <Icon name="paperclip" size={11} /> Add proof, upgrade to Evidence
               </button>
             )}
           </div>

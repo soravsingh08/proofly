@@ -228,7 +228,7 @@ export default function Dashboard() {
               ))}
               {badges.some((b) => !b.earned) && (
                 <span
-                  title={badges.filter((b) => !b.earned).map((b) => `${b.label} — ${b.desc}`).join("\n")}
+                  title={badges.filter((b) => !b.earned).map((b) => `${b.label}: ${b.desc}`).join("\n")}
                   className="inline-flex items-center gap-1.5 text-xs text-mute/60 bg-card2/50 rounded-full px-3 py-1.5"
                 >
                   <Icon name="lock" size={11} /> {badges.filter((b) => !b.earned).length} locked
@@ -261,7 +261,7 @@ function WeekCard({ insights, role, ...rest }) {
         )}
       </div>
       {entries.length === 0 ? (
-        <p className="text-sm text-mute">Nothing logged yet this week — today's a good day to start.</p>
+        <p className="text-sm text-mute">Nothing logged yet this week, today's a good day to start.</p>
       ) : (
         <div className="flex gap-6 flex-wrap">
           {entries.map(([k, v]) => {
@@ -299,7 +299,7 @@ function GoalsCard({ goals, role, refresh, ...rest }) {
     setBusy(true);
     try {
       await api.put("/goals", { metricKey, weeklyTarget: Number(target) });
-      toast("Weekly goal saved — the bar starts filling now");
+      toast("Weekly goal saved, the bar starts filling now");
       setAdding(false);
       setMetricKey("");
       setTarget("");
@@ -323,7 +323,7 @@ function GoalsCard({ goals, role, refresh, ...rest }) {
       </div>
       {goals.length === 0 && !adding && (
         <p className="text-sm text-mute">
-          Set a weekly target — "{role.metrics[0].label.toLowerCase()}: 20/week" — and watch the bar fill.
+          Set a weekly target, "{role.metrics[0].label.toLowerCase()}: 20/week", and watch the bar fill.
         </p>
       )}
       <div className="space-y-3.5">
@@ -402,7 +402,7 @@ function RecentCard({ recent, role, refresh, filter, onFilter, ...rest }) {
     if (!proofUrl.trim()) return;
     try {
       await api.put(`/contributions/${id}/evidence`, { evidenceUrl: proofUrl.trim() });
-      toast("Proof attached — entry upgraded to Evidence");
+      toast("Proof attached, entry upgraded to Evidence");
       setProofFor(null);
       setProofUrl("");
       refresh();
@@ -550,7 +550,7 @@ function GithubReposCard({ user, saveUser, repos, refresh }) {
     setBusy(true);
     try {
       const r = await api.post("/connections", { type: "github_repo", repo });
-      toast(`${repo} connected — synced ${r.data.synced} days of commits`);
+      toast(`${repo} connected, synced ${r.data.synced} days of commits`);
       setRepoInput("");
       refresh();
     } catch (err) {
@@ -563,7 +563,7 @@ function GithubReposCard({ user, saveUser, repos, refresh }) {
   async function syncRepo(c) {
     try {
       const r = await api.post(`/connections/${c._id}/sync`);
-      toast(`${c.label} — synced ${r.data.synced} days`);
+      toast(`${c.label}, synced ${r.data.synced} days`);
       refresh();
     } catch (err) {
       toast(errMsg(err, "Sync failed"), "error");
@@ -586,8 +586,8 @@ function GithubReposCard({ user, saveUser, repos, refresh }) {
       saveUser({ ...user, githubUsername: r.data.githubUsername });
       toast(
         r.data.resynced
-          ? `Saved — ${r.data.resynced} repo${r.data.resynced > 1 ? "s" : ""} re-synced with @${v}'s commits`
-          : `Username saved — shared repos now count only @${v}'s commits`
+          ? `Saved: ${r.data.resynced} repo${r.data.resynced > 1 ? "s" : ""} re-synced with @${v}'s commits`
+          : `Username saved, shared repos now count only @${v}'s commits`
       );
       if (r.data.resynced) refresh();
     } catch (err) {
@@ -603,7 +603,7 @@ function GithubReposCard({ user, saveUser, repos, refresh }) {
         <Icon name="github" size={14} /> GitHub repos
       </h2>
       <p className="text-[11px] text-mute mb-3">
-        Paste a public repo — commits in it become verified entries, refreshed daily.
+        Paste a public repo, commits in it become verified entries, refreshed daily.
       </p>
       <form onSubmit={addRepo} className="flex gap-2">
         <input
@@ -637,7 +637,7 @@ function GithubReposCard({ user, saveUser, repos, refresh }) {
       )}
       <label className="block mt-3">
         <span className="block text-[11px] text-mute mb-1">
-          Your GitHub username — in shared repos only your commits count
+          Your GitHub username, in shared repos only your commits count
         </span>
         <input
           placeholder="your-username"
@@ -664,7 +664,7 @@ function FreezeControl({ freezes, refresh }) {
     setBusy(true);
     try {
       await api.post("/users/streak-freeze", { date });
-      toast(`${prettyDate(date)} frozen — streak protected`);
+      toast(`${prettyDate(date)} frozen, streak protected`);
       setOpen(false);
       refresh();
     } catch (err) {
@@ -701,7 +701,7 @@ function FreezeControl({ freezes, refresh }) {
             </h3>
             <p className="text-xs text-mute mb-4">
               A freeze bridges one missed day so it doesn't break your streak. You get 2 per
-              month — it adds no activity, just protection.
+              month, it adds no activity, just protection.
             </p>
             <input
               type="date"
@@ -855,11 +855,11 @@ function ReportButton({ username }) {
   const options = [
     {
       label: "Proof-of-work report",
-      hint: "HTML — open anywhere, print to PDF",
+      hint: "HTML, open anywhere, print to PDF",
       icon: "file-text",
       ep: "/export/profile",
       fname: `proofly-${username}.html`,
-      done: "Report downloaded — open it or print to PDF",
+      done: "Report downloaded, open it or print to PDF",
     },
     {
       label: "CSV tracker template",
@@ -867,7 +867,7 @@ function ReportButton({ username }) {
       icon: "table",
       ep: "/connections/sheet-template",
       fname: "proofly-tracker.csv",
-      done: "Template downloaded — import it into Google Sheets",
+      done: "Template downloaded, import it into Google Sheets",
     },
   ];
 

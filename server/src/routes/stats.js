@@ -79,7 +79,7 @@ router.get("/insights", async (req, res) => {
     if (changePct !== null && changePct <= -30)
       nudges.push(`Activity is down ${-changePct}% vs last week.`);
     if (changePct !== null && changePct >= 30)
-      nudges.push(`You're up ${changePct}% on last week — keep pushing.`);
+      nudges.push(`You're up ${changePct}% on last week, keep pushing.`);
   }
 
   res.json({
