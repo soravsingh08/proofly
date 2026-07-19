@@ -1,13 +1,49 @@
 // Small shared UI atoms — keeps pages lean and consistent.
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { formatMetric } from "../config/roles";
 import { Icon } from "./icons";
+
+gsap.registerPlugin(DrawSVGPlugin);
 
 export function Card({ children, className = "" }) {
   return (
     <div className={`bg-card border border-line rounded-2xl p-5 ${className}`}>
       {children}
     </div>
+  );
+}
+
+// hand-drawn terracotta underline for page headings — draws itself
+// in on mount, stretches to its container (wrap heading + line in w-fit)
+export function SketchLine({ className = "" }) {
+  const pathRef = useRef(null);
+  useLayoutEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const tween = gsap.fromTo(
+      pathRef.current,
+      { drawSVG: "0%" },
+      { drawSVG: "100%", duration: 0.9, ease: "power2.inOut", delay: 0.45 }
+    );
+    return () => tween.kill();
+  }, []);
+  return (
+    <svg
+      viewBox="0 0 120 12"
+      fill="none"
+      preserveAspectRatio="none"
+      className={className}
+      aria-hidden="true"
+    >
+      <path
+        ref={pathRef}
+        d="M3 8c20-4 42-5 60-3s38 3 54 1"
+        stroke="#c4633a"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }
 

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { useAuth } from "../context/AuthContext";
 import { ROLES } from "../config/roles";
-import { Card, VerificationBadge } from "../components/ui";
+import { Card, SketchLine, VerificationBadge } from "../components/ui";
 import { Icon } from "../components/icons";
 
 function Section({ icon, title, children }) {
@@ -50,7 +50,10 @@ export default function HowToUse() {
   return (
     <div ref={rootRef} className="relative max-w-3xl mx-auto px-4 py-10">
       <div data-rise>
-        <h1 className="text-2xl font-bold mb-1">How to use Proofly</h1>
+        <div className="w-fit mb-2">
+          <h1 className="text-2xl font-bold">How to use Proofly</h1>
+          <SketchLine className="w-full h-3 mt-1.5" />
+        </div>
         <p className="text-sm text-mute mb-6">
           Your guide as a <span style={{ color: role.color }}>{role.label}</span>, what everything
           does and how to build proof that recruiters actually trust.

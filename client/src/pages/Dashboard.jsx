@@ -6,7 +6,7 @@ import { toast } from "../components/toast";
 import { useAuth } from "../context/AuthContext";
 import { ROLES, formatMetric } from "../config/roles";
 import Heatmap from "../components/Heatmap";
-import { Card, VerificationBadge, Spinner, Empty, Button } from "../components/ui";
+import { Card, VerificationBadge, Spinner, Empty, Button, SketchLine } from "../components/ui";
 import { addDays, localToday, prettyDate } from "../utils/dates";
 import { Icon } from "../components/icons";
 
@@ -131,29 +131,23 @@ export default function Dashboard() {
       {/* greeting hero — app-style banner with the day's next action */}
       <div
         data-rise
-        className="relative overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-[#2a160d] via-[#171009] to-card p-6 md:p-8"
+        className="relative overflow-hidden rounded-2xl border border-line bg-card p-6 md:p-8"
       >
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage:
-              "radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)",
-            backgroundSize: "22px 22px",
-          }}
-          aria-hidden="true"
-        />
         <div className="relative flex flex-wrap items-center justify-between gap-6">
           <div>
             <p className="text-sm text-brand font-medium">{greeting()},</p>
-            <h1 className="text-3xl font-bold tracking-tight">
-              {user.name.split(" ")[0]}!
-            </h1>
+            <div className="w-fit">
+              <h1 className="text-3xl font-bold tracking-tight">
+                {user.name.split(" ")[0]}!
+              </h1>
+              <SketchLine className="w-full h-3 mt-1.5" />
+            </div>
             <p className="text-sm text-mute mt-1.5 max-w-md">
               {nudge || "Let's keep your proof growing today."}
             </p>
             <Link
               to="/log"
-              className="mt-5 inline-flex items-center gap-3 bg-bg/60 border border-line rounded-xl px-4 py-2.5 text-sm hover:border-brand/60 transition group"
+              className="mt-5 inline-flex items-center gap-3 bg-bg border border-line rounded-xl px-4 py-2.5 text-sm hover:border-brand/60 transition group"
             >
               <span className="w-8 h-8 rounded-lg bg-brand/15 border border-brand/30 text-brand flex items-center justify-center">
                 <Icon name={insights.daysSinceLastLog === 0 ? "check" : "plus"} size={14} />
@@ -171,7 +165,7 @@ export default function Dashboard() {
           </div>
           <Link
             to={`/u/${user.username}`}
-            className="hidden sm:flex items-center gap-3 bg-bg/50 border border-line rounded-xl px-4 py-3 hover:border-mute transition"
+            className="hidden sm:flex items-center gap-3 bg-bg border border-line rounded-xl px-4 py-3 hover:border-mute transition"
             title="Your public profile"
           >
             <span

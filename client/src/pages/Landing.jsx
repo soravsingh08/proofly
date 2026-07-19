@@ -504,7 +504,13 @@ export default function Landing() {
                 const drop = [5, 28, 40, 40, 28, 5][i % 6];
                 const tilt = [-7, -4, -1.5, 1.5, 4, 7][i % 6];
                 return (
-                  <div key={k} className="hang-card shrink-0">
+                  <button
+                    key={k}
+                    type="button"
+                    onClick={() => setSpotRole(k)}
+                    className="hang-card shrink-0 cursor-pointer text-left"
+                    aria-label={`See top ${role.label}s`}
+                  >
                     <div style={{ transform: `translateY(${drop}px)` }}>
                       <div
                         className="sway"
@@ -542,7 +548,7 @@ export default function Landing() {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>

@@ -4,7 +4,7 @@ import gsap from "gsap";
 import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { ROLES, formatMetric } from "../config/roles";
-import { Button, Card, Input, VerificationBadge } from "../components/ui";
+import { Button, Card, Input, SketchLine, VerificationBadge } from "../components/ui";
 import { Icon } from "../components/icons";
 import { toast } from "../components/toast";
 import { addDays, localToday, prettyDate } from "../utils/dates";
@@ -100,12 +100,15 @@ export default function LogActivity() {
   return (
     <div ref={rootRef} className="relative max-w-5xl mx-auto px-4 py-10">
       <div data-rise>
-        <h1 className="text-2xl font-bold mb-1 flex items-center gap-2.5">
-          <span style={{ color: role.color }}>
-            <Icon name={role.icon} size={20} />
-          </span>
-          Log your work
-        </h1>
+        <div className="w-fit mb-1">
+          <h1 className="text-2xl font-bold flex items-center gap-2.5">
+            <span style={{ color: role.color }}>
+              <Icon name={role.icon} size={20} />
+            </span>
+            Log your work
+          </h1>
+          <SketchLine className="w-full h-3 mt-1.5" />
+        </div>
         <p className="text-sm text-mute mb-5">
           {role.label} · every day you log builds your public proof.
         </p>
