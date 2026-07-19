@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
+import MobileTabBar from "./components/MobileTabBar";
 import AssistantWidget from "./components/AssistantWidget";
 import { ToastHost } from "./components/toast";
 import { Spinner } from "./components/ui";
@@ -70,6 +71,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </PageFade>
+        <MobileTabBar />
         <AssistantWidget />
         <ToastHost />
       </BrowserRouter>

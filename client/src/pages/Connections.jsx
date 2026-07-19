@@ -3,7 +3,7 @@ import gsap from "gsap";
 import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { ROLES } from "../config/roles";
-import { AmbientGlow, Button, Card, Spinner } from "../components/ui";
+import { Button, Card, Spinner } from "../components/ui";
 import { Icon } from "../components/icons";
 import { toast } from "../components/toast";
 
@@ -45,7 +45,6 @@ export default function Connections() {
 
   return (
     <div ref={rootRef} className="relative max-w-3xl mx-auto px-4 py-10">
-      <AmbientGlow />
       <div data-rise>
         <h1 className="text-2xl font-bold mb-1">Connections</h1>
         <p className="text-sm text-mute mb-6">

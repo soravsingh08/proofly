@@ -6,7 +6,7 @@ import { toast } from "../components/toast";
 import { useAuth } from "../context/AuthContext";
 import { ROLES, formatMetric } from "../config/roles";
 import Heatmap from "../components/Heatmap";
-import { AmbientGlow, Card, VerificationBadge, Spinner, Empty, Button } from "../components/ui";
+import { Card, VerificationBadge, Spinner, Empty, Button } from "../components/ui";
 import { addDays, localToday, prettyDate } from "../utils/dates";
 import { Icon } from "../components/icons";
 
@@ -25,6 +25,29 @@ const BADGE_ICONS = {
 function greeting() {
   const h = new Date().getHours();
   return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+}
+
+// small SVG progress ring for the verified-proof stat
+function Ring({ pct, size = 44, stroke = 5 }) {
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  return (
+    <svg width={size} height={size} className="-rotate-90 shrink-0" aria-hidden="true">
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#272727" strokeWidth={stroke} />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        stroke="#22c55e"
+        strokeWidth={stroke}
+        strokeLinecap="round"
+        strokeDasharray={c}
+        strokeDashoffset={c * (1 - pct / 100)}
+        className="transition-all duration-700"
+      />
+    </svg>
+  );
 }
 
 export default function Dashboard() {
@@ -105,26 +128,101 @@ export default function Dashboard() {
 
   return (
     <div ref={rootRef} className="relative max-w-7xl mx-auto px-4 py-8 space-y-4">
-      <AmbientGlow />
-      {/* greeting + nudge */}
-      <div data-rise className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">
-            {greeting()}, {user.name.split(" ")[0]}
-          </h1>
-          <p className="text-sm text-mute mt-0.5">
-            {role.label} ·{" "}
-            <Link to={`/u/${user.username}`} className="hover:text-ink transition">
-              proofly.app/u/{user.username}
+      {/* greeting hero — app-style banner with the day's next action */}
+      <div
+        data-rise
+        className="relative overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-[#2a160d] via-[#171009] to-card p-6 md:p-8"
+      >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)",
+            backgroundSize: "22px 22px",
+          }}
+          aria-hidden="true"
+        />
+        <div className="relative flex flex-wrap items-center justify-between gap-6">
+          <div>
+            <p className="text-sm text-brand font-medium">{greeting()},</p>
+            <h1 className="text-3xl font-bold tracking-tight">
+              {user.name.split(" ")[0]}!
+            </h1>
+            <p className="text-sm text-mute mt-1.5 max-w-md">
+              {nudge || "Let's keep your proof growing today."}
+            </p>
+            <Link
+              to="/log"
+              className="mt-5 inline-flex items-center gap-3 bg-bg/60 border border-line rounded-xl px-4 py-2.5 text-sm hover:border-brand/60 transition group"
+            >
+              <span className="w-8 h-8 rounded-lg bg-brand/15 border border-brand/30 text-brand flex items-center justify-center">
+                <Icon name={insights.daysSinceLastLog === 0 ? "check" : "plus"} size={14} />
+              </span>
+              <span className="text-left">
+                <span className="block text-[11px] text-mute">Next up</span>
+                <span className="block font-medium">
+                  {insights.daysSinceLastLog === 0
+                    ? "Today's logged. Stack more on top"
+                    : "Log today's work"}
+                </span>
+              </span>
+              <span className="text-mute group-hover:text-ink transition">→</span>
             </Link>
-          </p>
-        </div>
-        {nudge && (
-          <div className="flex items-center gap-2.5 border border-amber-500/30 bg-amber-500/10 rounded-xl px-4 py-2.5">
-            <Icon name="alert" size={15} className="text-amber-400" />
-            <span className="text-sm text-amber-200/90">{nudge}</span>
           </div>
-        )}
+          <Link
+            to={`/u/${user.username}`}
+            className="hidden sm:flex items-center gap-3 bg-bg/50 border border-line rounded-xl px-4 py-3 hover:border-mute transition"
+            title="Your public profile"
+          >
+            <span
+              className="w-9 h-9 rounded-lg border flex items-center justify-center"
+              style={{
+                color: role.color,
+                borderColor: `${role.color}55`,
+                background: `${role.color}14`,
+              }}
+            >
+              <Icon name={role.icon} size={16} />
+            </span>
+            <span>
+              <span className="block text-xs text-mute">{role.label}</span>
+              <span className="block text-sm font-medium">
+                proofly.app/u/{user.username}
+              </span>
+            </span>
+          </Link>
+        </div>
+      </div>
+
+      {/* quick actions — app-style tiles */}
+      <div data-rise className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {[
+          { to: "/log", icon: "plus", color: "#c4633a", label: "Log work", sub: "Keep the streak" },
+          { to: "/connections", icon: "zap", color: "#3b82f6", label: "Connect sources", sub: "Auto-verified daily" },
+          { to: "/leaderboard", icon: "trophy", color: "#22c55e", label: "Leaderboard", sub: "See your rank" },
+          { to: `/u/${user.username}/resume`, icon: "file-text", color: "#a855f7", label: "Résumé", sub: "Proof to PDF" },
+        ].map((a) => (
+          <Link
+            key={a.to}
+            to={a.to}
+            className="bg-card border border-line rounded-2xl p-4 card-lift"
+          >
+            <span
+              className="w-10 h-10 rounded-full flex items-center justify-center mb-3"
+              style={{
+                background: `${a.color}1a`,
+                color: a.color,
+                border: `1px solid ${a.color}40`,
+              }}
+            >
+              <Icon name={a.icon} size={16} />
+            </span>
+            <span className="block text-sm font-semibold">{a.label}</span>
+            <span className="block text-[11px] mt-0.5" style={{ color: a.color }}>
+              {a.sub}
+            </span>
+          </Link>
+        ))}
       </div>
 
       {/* hero stats */}
@@ -150,9 +248,12 @@ export default function Dashboard() {
           <div className="text-2xl font-bold" data-count={summary.activeDays}>{summary.activeDays}</div>
           <div className="text-xs text-mute mt-1">active days</div>
         </Card>
-        <Card className="text-center !py-4 card-lift">
-          <div className="text-2xl font-bold text-green-400">{verifiedPct}%</div>
-          <div className="text-xs text-mute mt-1">verified entries</div>
+        <Card className="!py-4 card-lift flex items-center justify-center gap-3">
+          <Ring pct={verifiedPct} />
+          <div className="text-left">
+            <div className="text-lg font-bold text-green-400 leading-none">{verifiedPct}%</div>
+            <div className="text-xs text-mute mt-1">verified proof</div>
+          </div>
         </Card>
       </div>
 
@@ -898,7 +999,7 @@ function ReportButton({ username }) {
     <div>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full border border-line rounded-2xl bg-card py-3 text-sm text-mute hover:text-ink hover:border-brand transition inline-flex items-center justify-center gap-2"
+        className="w-full rounded-2xl bg-brand py-3 text-sm text-ink font-medium hover:bg-[#d0764c] active:scale-[0.99] transition inline-flex items-center justify-center gap-2"
       >
         <Icon name="download" size={14} />
         Download proof-of-work

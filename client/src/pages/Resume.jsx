@@ -19,6 +19,7 @@ export default function Resume() {
   const { username } = useParams();
   const [data, setData] = useState(null);
   const [notFound, setNotFound] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     api
@@ -45,12 +46,10 @@ export default function Resume() {
         >
           ← Back to profile
         </Link>
-        <Button onClick={() => window.print()}>
-          <Icon name="download" size={14} /> Download PDF
-        </Button>
       </div>
 
-      {/* the sheet */}
+      {/* the sheet — with the floating actions from the landing preview */}
+      <div className="relative">
       <div className="resume-sheet bg-[#faf7f2] text-[#1c1814] rounded-2xl shadow-2xl shadow-black/50 p-8 md:p-12">
         {/* header */}
         <div className="flex items-start justify-between gap-4 pb-6 border-b-2 border-[#1c1814]">
@@ -180,7 +179,25 @@ export default function Resume() {
         </div>
       </div>
 
-      <p className="no-print text-center text-xs text-mute mt-4">
+      {/* floating download/share affordances, same as the landing preview */}
+      <div className="no-print absolute -bottom-5 right-4 flex items-center gap-2">
+        <Button onClick={() => window.print()} className="shadow-lg shadow-black/40">
+          <Icon name="download" size={14} /> Download PDF
+        </Button>
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(window.location.href);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1500);
+          }}
+          className="bg-card border border-line text-mute text-[11px] rounded-lg px-3 py-2.5 shadow-lg shadow-black/40 hover:text-ink transition"
+        >
+          {copied ? "Link copied!" : "or share the live link"}
+        </button>
+      </div>
+      </div>
+
+      <p className="no-print text-center text-xs text-mute mt-8">
         Tip: in the print dialog choose "Save as PDF", then send it or just
         share your live link.
       </p>

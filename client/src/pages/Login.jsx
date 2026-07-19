@@ -4,6 +4,7 @@ import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { Button, Input, PasswordInput } from "../components/ui";
 import AuthLayout from "../components/AuthLayout";
+import DemoButton, { OrDivider } from "../components/DemoButton";
 
 export default function Login() {
   const { login } = useAuth();
@@ -60,6 +61,8 @@ export default function Login() {
           {busy ? "Signing in…" : "Sign in"}
         </Button>
       </form>
+      <OrDivider />
+      <DemoButton className="w-full border border-line rounded-xl px-4 py-2.5 text-sm text-ink hover:border-mute transition" />
     </AuthLayout>
   );
 }

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { useAuth } from "../context/AuthContext";
 import { ROLES } from "../config/roles";
-import { AmbientGlow, Card, VerificationBadge } from "../components/ui";
+import { Card, VerificationBadge } from "../components/ui";
 import { Icon } from "../components/icons";
 
 function Section({ icon, title, children }) {
@@ -49,7 +49,6 @@ export default function HowToUse() {
 
   return (
     <div ref={rootRef} className="relative max-w-3xl mx-auto px-4 py-10">
-      <AmbientGlow />
       <div data-rise>
         <h1 className="text-2xl font-bold mb-1">How to use Proofly</h1>
         <p className="text-sm text-mute mb-6">

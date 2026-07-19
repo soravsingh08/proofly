@@ -21,6 +21,14 @@ html {
 body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  /* quiet, full-page texture so no screen ever feels like bare void:
+     a faint dot grid (echoes the contribution graph) under a barely
+     warm wash at the top — visible on wide screens, never loud */
+  background-image:
+    linear-gradient(to bottom, rgba(196, 99, 58, 0.05), transparent 340px),
+    radial-gradient(rgba(241, 241, 239, 0.032) 1px, transparent 1px);
+  background-size: 100% 100%, 26px 26px;
+  background-attachment: fixed, fixed;
 }
 
 /* route-change transition — every page fades and rises in */
@@ -33,6 +41,20 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .page-fade { animation: none; }
+}
+
+/* clothesline polaroids — each card swings gently from its clip,
+   on its own clock, like wind moving through the line */
+.sway {
+  transform-origin: top center;
+  animation: sway var(--sway-dur, 6s) ease-in-out var(--sway-delay, 0s) infinite alternate;
+}
+@keyframes sway {
+  from { transform: rotate(-2.1deg); }
+  to { transform: rotate(2.3deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sway { animation: none; }
 }
 
 /* footer heatmap strip — each cell breathes on its own offset,

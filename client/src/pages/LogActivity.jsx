@@ -4,7 +4,7 @@ import gsap from "gsap";
 import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { ROLES, formatMetric } from "../config/roles";
-import { AmbientGlow, Button, Card, Input, VerificationBadge } from "../components/ui";
+import { Button, Card, Input, VerificationBadge } from "../components/ui";
 import { Icon } from "../components/icons";
 import { toast } from "../components/toast";
 import { addDays, localToday, prettyDate } from "../utils/dates";
@@ -99,7 +99,6 @@ export default function LogActivity() {
 
   return (
     <div ref={rootRef} className="relative max-w-5xl mx-auto px-4 py-10">
-      <AmbientGlow />
       <div data-rise>
         <h1 className="text-2xl font-bold mb-1 flex items-center gap-2.5">
           <span style={{ color: role.color }}>

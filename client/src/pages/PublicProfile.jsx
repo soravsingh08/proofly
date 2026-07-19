@@ -73,6 +73,14 @@ export default function PublicProfile() {
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <StreakBadge streak={summary.currentStreak} />
+          {summary.verifiedPct > 0 && (
+            <span
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-green-400 border border-green-500/30 bg-green-500/10 rounded-full px-3 py-2"
+              title="Share of entries backed by evidence, imports, or API syncs"
+            >
+              <Icon name="check" size={12} /> {summary.verifiedPct}% verified
+            </span>
+          )}
           <button
             onClick={() => navigate(`/u/${profile.username}/resume`)}
             className="inline-flex items-center gap-1.5 text-xs border border-line rounded-lg px-3 py-2 text-mute hover:text-ink hover:border-mute transition"
@@ -80,29 +88,43 @@ export default function PublicProfile() {
           >
             <Icon name="download" size={13} /> Résumé
           </button>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1500);
+            }}
+            className="inline-flex items-center gap-1.5 text-xs border border-line rounded-lg px-3 py-2 text-mute hover:text-ink hover:border-mute transition"
+          >
+            <Icon name={copied ? "check" : "link"} size={13} />
+            {copied ? "Copied!" : "Copy link"}
+          </button>
           {isOwn && (
-            <>
-              <button
-                onClick={() => setEditing(true)}
-                className="inline-flex items-center gap-1.5 text-xs border border-line rounded-lg px-3 py-2 text-mute hover:text-ink hover:border-mute transition"
-              >
-                <Icon name="pencil" size={13} /> Edit profile
-              </button>
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  setCopied(true);
-                  setTimeout(() => setCopied(false), 1500);
-                }}
-                className="inline-flex items-center gap-1.5 text-xs border border-line rounded-lg px-3 py-2 text-mute hover:text-ink hover:border-mute transition"
-              >
-                <Icon name={copied ? "check" : "link"} size={13} />
-                {copied ? "Copied!" : "Copy link"}
-              </button>
-            </>
+            <button
+              onClick={() => setEditing(true)}
+              className="inline-flex items-center gap-1.5 text-xs border border-line rounded-lg px-3 py-2 text-mute hover:text-ink hover:border-mute transition"
+            >
+              <Icon name="pencil" size={13} /> Edit profile
+            </button>
           )}
         </div>
       </div>
+
+      {/* earned achievement badges — the API already sends these */}
+      {data.badges?.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {data.badges.map((b) => (
+            <span
+              key={b.key}
+              title={b.desc}
+              className="inline-flex items-center gap-1.5 text-xs border border-line bg-card2 rounded-full px-3 py-1.5"
+            >
+              <Icon name="sparkles" size={12} style={{ color: role.color }} />
+              {b.label}
+            </span>
+          ))}
+        </div>
+      )}
 
       {editing && (
         <EditProfileModal
@@ -177,6 +199,16 @@ export default function PublicProfile() {
                 </div>
                 {c.note && (
                   <div className="text-xs text-mute mt-0.5 line-clamp-2">{c.note}</div>
+                )}
+                {c.evidenceUrl && (
+                  <a
+                    href={c.evidenceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-brand hover:underline mt-1"
+                  >
+                    <Icon name="link" size={11} /> View proof
+                  </a>
                 )}
               </li>
             ))}

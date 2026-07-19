@@ -4,6 +4,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import api, { errMsg } from "../api/client";
+import { useAuth } from "../context/AuthContext";
 
 const QUICK_QUESTIONS = [
   "How does Proofly work?",
@@ -63,6 +64,9 @@ function Bubble({ msg, onNavigate }) {
 }
 
 export default function AssistantWidget() {
+  const { user } = useAuth();
+  // logged-in mobile has the bottom tab bar — float above it
+  const raised = Boolean(user?.role);
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([HELLO]);
   const [input, setInput] = useState("");
@@ -97,7 +101,7 @@ export default function AssistantWidget() {
   return (
     <>
       {open && (
-        <div className="fixed bottom-24 right-5 z-50 w-[min(22rem,calc(100vw-2.5rem))] flex flex-col bg-card border border-line rounded-2xl shadow-2xl shadow-black/50 overflow-hidden no-print">
+        <div className={`fixed ${raised ? "bottom-[9.5rem] md:bottom-24" : "bottom-24"} right-5 z-50 w-[min(22rem,calc(100vw-2.5rem))] flex flex-col bg-card border border-line rounded-2xl shadow-2xl shadow-black/50 overflow-hidden no-print`}>
           <div className="flex items-center gap-2.5 px-4 py-3 border-b border-line bg-card2">
             <span className="w-2 h-2 rounded-full bg-brand animate-pulse" />
             <div>
@@ -155,7 +159,7 @@ export default function AssistantWidget() {
       <button
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? "Close site guide" : "Open site guide"}
-        className="fixed bottom-5 right-5 z-50 w-13 h-13 p-3.5 rounded-full bg-brand text-ink shadow-lg shadow-black/40 hover:bg-[#d0764c] active:scale-95 transition no-print"
+        className={`fixed ${raised ? "bottom-20 md:bottom-5" : "bottom-5"} right-5 z-50 w-13 h-13 p-3.5 rounded-full bg-brand text-ink shadow-lg shadow-black/40 hover:bg-[#d0764c] active:scale-95 transition no-print`}
       >
         <ChatIcon open={open} />
       </button>
