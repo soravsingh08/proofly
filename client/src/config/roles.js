@@ -10,6 +10,7 @@ export const ROLES = {
       { key: "pull_request", label: "Pull Requests", type: "count" },
       { key: "bug_fixed", label: "Bugs Fixed", type: "count" },
       { key: "feature", label: "Features Shipped", type: "count" },
+      { key: "problem_solved", label: "LeetCode Solved", type: "count" },
     ],
   },
   digital_marketing: {

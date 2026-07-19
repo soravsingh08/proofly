@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
+import { ROLES } from "../config/roles";
 import { Button, Input, PasswordInput } from "../components/ui";
 import AuthLayout from "../components/AuthLayout";
 import DemoButton, { OrDivider } from "../components/DemoButton";
@@ -9,6 +10,8 @@ import DemoButton, { OrDivider } from "../components/DemoButton";
 export default function Register() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const intent = ROLES[params.get("role")];
   const [form, setForm] = useState({ name: "", username: "", email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
@@ -39,7 +42,7 @@ export default function Register() {
   return (
     <AuthLayout
       variant="register"
-      title="Create your profile"
+      title={intent ? `Join as ${intent.label}` : "Create your profile"}
       subtitle="Start building proof of your work today."
       footer={
         <>

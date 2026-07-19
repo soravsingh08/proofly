@@ -11,6 +11,7 @@ const TYPE_META = {
   github_repo: { icon: "github", title: "GitHub repository" },
   sheet: { icon: "table", title: "Google Sheet" },
   youtube: { icon: "play", title: "YouTube channel" },
+  leetcode: { icon: "code", title: "LeetCode profile" },
 };
 
 // Connect once, we fetch daily — the "chhod do hum pe" page.
@@ -63,6 +64,7 @@ export default function Connections() {
 
       <div className="space-y-3">
         {user.role === "developer" && <RepoCard refresh={load} />}
+        {user.role === "developer" && <LeetcodeCard refresh={load} />}
         {hasVideoMetric && <YoutubeCard refresh={load} />}
         <SheetCard refresh={load} roleLabel={role.label} />
       </div>
@@ -165,6 +167,47 @@ function RepoCard({ refresh }) {
           placeholder="facebook/react"
           value={repo}
           onChange={(e) => setRepo(e.target.value)}
+          className="flex-1 min-w-0 bg-bg border border-line rounded-lg px-3 py-2 text-sm outline-none focus:border-brand transition"
+        />
+        <Button className="!px-4 !py-2 text-xs" disabled={busy}>
+          {busy ? "Connecting…" : "Connect"}
+        </Button>
+      </form>
+    </SourceCard>
+  );
+}
+
+function LeetcodeCard({ refresh }) {
+  const [username, setUsername] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function add(e) {
+    e.preventDefault();
+    if (busy || !username.trim()) return;
+    setBusy(true);
+    try {
+      const r = await api.post("/connections", { type: "leetcode", username: username.trim() });
+      toast(`LeetCode connected — synced ${r.data.synced} days of solving`);
+      setUsername("");
+      refresh();
+    } catch (err) {
+      toast(errMsg(err, "Couldn't connect LeetCode"), "error");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <SourceCard
+      icon="code"
+      title="Connect your LeetCode"
+      hint="Enter your LeetCode username — every day you solve, we log it as verified LeetCode Solved. Your profile must be public."
+    >
+      <form onSubmit={add} className="flex gap-2">
+        <input
+          placeholder="your-leetcode-username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           className="flex-1 min-w-0 bg-bg border border-line rounded-lg px-3 py-2 text-sm outline-none focus:border-brand transition"
         />
         <Button className="!px-4 !py-2 text-xs" disabled={busy}>

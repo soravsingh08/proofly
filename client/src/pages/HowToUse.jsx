@@ -165,6 +165,11 @@ export default function HowToUse() {
                 Set your <Hl>GitHub username</Hl> below the repo list, in shared repos only YOUR
                 commits count. No password, ever: we read only what's already public.
               </Point>
+              <Point>
+                <Hl>LeetCode</Hl> (Connections tab): enter your LeetCode username — every day you
+                solve becomes a Verified <Hl>LeetCode Solved</Hl> entry, synced nightly from your
+                public profile.
+              </Point>
             </>
           )}
           {role.metrics.some((m) => m.key === "video") && (

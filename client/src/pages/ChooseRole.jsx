@@ -34,7 +34,11 @@ function MiniGraph({ accent, weeks = 13, cell = 8 }) {
 export default function ChooseRole() {
   const { saveUser } = useAuth();
   const navigate = useNavigate();
-  const [selected, setSelected] = useState(null);
+  // pre-select the role they clicked on the landing page, if any
+  const [selected, setSelected] = useState(() => {
+    const r = localStorage.getItem("proofly_role_intent");
+    return ROLES[r] ? r : null;
+  });
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -44,6 +48,7 @@ export default function ChooseRole() {
     setError("");
     try {
       const r = await api.put("/users/role", { role: selected });
+      localStorage.removeItem("proofly_role_intent");
       saveUser(r.data.user);
       navigate("/dashboard");
     } catch (err) {
