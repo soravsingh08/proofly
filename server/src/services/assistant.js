@@ -15,17 +15,16 @@ const roleLabels = Object.values(ROLES).map((r) => r.label).join(", ");
 // widget renders as tap-able chips.
 const TOPICS = [
   {
-    keywords: ["what", "proofly", "about", "platform", "site", "website", "work", "how"],
+    keywords: ["proofly", "about", "platform", "site", "website"],
     reply:
-      `Proofly is like GitHub's contribution graph, but for every profession (${roleLabels}). ` +
-      `You log your real work daily, back it with evidence, and your public profile shows a heatmap, streaks and a score recruiters can trust. ${SITE.about.tagline}`,
+      "Think GitHub's contribution graph, but for every profession. Log real work daily and your public profile shows the streaks and proof recruiters can trust.",
     links: [{ label: "Leaderboard", to: "/leaderboard" }],
     id: "about",
   },
   {
     keywords: ["start", "started", "begin", "register", "sign", "signup", "account", "join", "new"],
     reply:
-      "Getting started takes a minute: create an account, pick your profession, then log your first day of work. Your public profile and heatmap start growing immediately.",
+      "Super quick: create an account, pick your profession, log your first day. Your graph starts growing right away.",
     links: [
       { label: "Create account", to: "/register" },
       { label: "Log in", to: "/login" },
@@ -35,77 +34,77 @@ const TOPICS = [
   {
     keywords: ["log", "logging", "activity", "entry", "add", "record", "daily", "today"],
     reply:
-      "Go to Log Activity, pick the date, enter the metrics for your role (e.g. commits, campaigns, deals), optionally add a note and an evidence link (PR, live campaign, report). Each logged day lights up your heatmap.",
+      "Head to Log Activity, enter today's numbers, and attach a proof link if you have one. Takes about 30 seconds.",
     links: [{ label: "Log Activity", to: "/log" }],
     id: "log",
   },
   {
     keywords: ["role", "roles", "profession", "developer", "marketer", "sales", "designer", "hr", "choose"],
     reply:
-      `Proofly currently supports: ${roleLabels}. Each role has its own metrics and weights. You pick one when you join, and your dashboard, heatmap and score are built from it.`,
+      `We support: ${roleLabels}. Each role gets its own metrics and its own graph color.`,
     links: [{ label: "Choose role", to: "/choose-role" }],
     id: "roles",
   },
   {
     keywords: ["verify", "verification", "evidence", "proof", "trust", "fake", "real", "badge"],
     reply:
-      "Every entry has a verification level: self-reported (no proof), evidence (you attached a link), or imported/synced (pulled straight from a platform like Meta Ads or GitHub, so it can't be faked). Higher rungs earn more recruiter trust badges on your profile.",
+      "Three trust levels: self-reported, evidence (you attached a link), and verified (synced straight from GitHub or Meta Ads). More proof, more recruiter trust.",
     links: [],
     id: "verification",
   },
   {
     keywords: ["streak", "streaks", "freeze", "freezes", "consistency", "miss", "missed", "gap"],
     reply:
-      "A streak is consecutive days with logged work. It's the platform's core signal because you can't fake showing up every day. Streak freezes can bridge an occasional missed day so one gap doesn't erase months of consistency.",
+      "Log work on back-to-back days and your streak grows. Miss a day and it resets, though a freeze can save the occasional gap.",
     links: [{ label: "Dashboard", to: "/dashboard" }],
     id: "streaks",
   },
   {
     keywords: ["score", "points", "rank", "ranking", "leaderboard", "calculated", "weight", "top"],
     reply:
-      "Your score comes from weighted metrics (each role weights what matters, e.g. features count more than commits), active days and your streak. The leaderboard ranks everyone by it; consistency beats one-day spikes.",
+      "Score = your metrics + active days + streak. Consistency beats one big day, and the leaderboard ranks by it.",
     links: [{ label: "Leaderboard", to: "/leaderboard" }],
     id: "score",
   },
   {
     keywords: ["heatmap", "graph", "green", "squares", "grid", "calendar", "contribution"],
     reply:
-      "The heatmap is your year at a glance: one cell per day, tinted by how much weighted work you logged. It's the same idea as GitHub's contribution graph, for your profession.",
+      "One square per day, brighter means more work logged. Your whole year at a glance.",
     links: [{ label: "Dashboard", to: "/dashboard" }],
     id: "heatmap",
   },
   {
-    keywords: ["import", "excel", "upload", "meta", "facebook", "ads", "sync", "api", "connect", "github", "integration"],
+    keywords: ["import", "excel", "upload", "meta", "facebook", "ads", "sync", "api", "connect", "github", "integration", "youtube", "sheet"],
     reply:
-      "You can import instead of typing: Meta Ads specialists can upload Excel exports or connect their ad account for verified syncs, and developers can link GitHub so commits sync automatically. Imported entries get the highest verification badge.",
+      "Skip the typing: connect GitHub, Meta Ads, YouTube or a Google Sheet and your work syncs daily as verified entries.",
     links: [{ label: "Import Meta Ads", to: "/import" }],
     id: "import",
   },
   {
     keywords: ["resume", "cv", "export", "pdf", "print", "summary", "ai", "recruiter", "share", "profile", "public", "link"],
     reply:
-      "Your profile is public at /u/your-username, share it like a GitHub link. From there recruiters can open a printable résumé view, and you can generate an AI career summary built from your logged proof, not self-description.",
+      "Your profile lives at proofly.app/u/your-username. Share it anywhere, and grab the printable résumé from there too.",
     links: [{ label: "Leaderboard (find profiles)", to: "/leaderboard" }],
     id: "profile",
   },
   {
     keywords: ["goal", "goals", "target", "reminder", "email"],
     reply:
-      "You can set goals (daily or weekly targets for your metrics) and Proofly tracks them from your logged work. Email reminders help protect your streak.",
+      "Set weekly targets on your dashboard and watch the bars fill as you log. Little wins, every week.",
     links: [{ label: "Dashboard", to: "/dashboard" }],
     id: "goals",
   },
   {
     keywords: ["help", "support", "bug", "problem", "contact", "team", "who", "made", "built", "founder"],
     reply:
-      `Proofly is built by ${SITE.team.map((t) => t.name).join(" and ")}. Something broken or confusing? Use the support option in your account to reach us. Topics: ${SITE.supportTopics.join(", ")}.`,
+      `Proofly is built by ${SITE.team.map((t) => t.name).join(" and ")}. Something broken? Use the support option in your account and we'll take a look.`,
     links: [],
     id: "support",
   },
 ];
 
 const FALLBACK_REPLY =
-  "I can help you get around Proofly! Ask me things like: how does Proofly work, how is my score calculated, how do streaks work, how to verify my work, how to import Meta Ads data, or how to share my profile with recruiters.";
+  "Hmm, not sure I got that! Try asking about streaks, scoring, verification, connecting your tools, or sharing your profile.";
 
 // tiny stemmer-free scorer: count keyword hits, longest keyword wins ties
 function matchTopic(message) {
@@ -136,7 +135,7 @@ async function llmAnswer(message, history) {
       role: "system",
       content:
         `You are the friendly in-app helper for Proofly (${SITE.about.title}). ` +
-        `Answer ONLY from the site knowledge below in 1-3 short sentences, conversational, no markdown. ` +
+        `Answer ONLY from the site knowledge below in 1-2 short, warm, conversational sentences, no markdown. ` +
         `If the question is unrelated to Proofly, politely steer back to the site.\n\nSITE KNOWLEDGE\n${knowledgeDigest()}\n\nPAGES: /register, /login, /choose-role, /dashboard, /log, /import, /leaderboard, /u/<username>, /u/<username>/resume`,
     },
     ...history.slice(-6).map((m) => ({

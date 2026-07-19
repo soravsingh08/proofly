@@ -15,6 +15,7 @@ import PublicProfile from "./pages/PublicProfile";
 import Leaderboard from "./pages/Leaderboard";
 import ImportMetaAds from "./pages/ImportMetaAds";
 import Connections from "./pages/Connections";
+import About from "./pages/About";
 import HowToUse from "./pages/HowToUse";
 import Resume from "./pages/Resume";
 
@@ -68,6 +69,7 @@ export default function App() {
           <Route path="/u/:username" element={<PublicProfile />} />
           <Route path="/u/:username/resume" element={<Resume />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/about" element={<About />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </PageFade>

@@ -33,7 +33,7 @@ function Ring({ pct, size = 44, stroke = 5 }) {
   const c = 2 * Math.PI * r;
   return (
     <svg width={size} height={size} className="-rotate-90 shrink-0" aria-hidden="true">
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#272727" strokeWidth={stroke} />
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--color-line)" strokeWidth={stroke} />
       <circle
         cx={size / 2}
         cy={size / 2}
@@ -131,7 +131,8 @@ export default function Dashboard() {
       {/* greeting hero — app-style banner with the day's next action */}
       <div
         data-rise
-        className="relative overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-[#2a160d] via-[#171009] to-card p-6 md:p-8"
+        data-theme="dark"
+        className="relative overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-[#2a160d] via-[#171009] to-[#131313] p-6 md:p-8"
       >
         <div
           className="absolute inset-0 pointer-events-none"
@@ -319,6 +320,7 @@ export default function Dashboard() {
 
         {/* side rail */}
         <div data-rise className="space-y-3">
+          <ReportButton username={user.username} />
           <Card>
             <h2 className="font-semibold text-sm mb-3">Achievements</h2>
             <div className="flex flex-wrap gap-1.5">
@@ -346,7 +348,6 @@ export default function Dashboard() {
             <GithubReposCard user={user} saveUser={saveUser} repos={repos} refresh={load} />
           )}
           <AccountCard user={user} saveUser={saveUser} />
-          <ReportButton username={user.username} />
         </div>
       </div>
     </div>

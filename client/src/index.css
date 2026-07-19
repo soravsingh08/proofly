@@ -13,8 +13,70 @@
     sans-serif;
 }
 
+/* per-theme knobs that utilities can't cover */
+:root {
+  --wash-top: rgba(196, 99, 58, 0.05);
+  --dot: rgba(241, 241, 239, 0.032);
+  --hm-empty: #161616;
+  --hm-base: #0a0a0a;
+  --rope: #2e2e2e;
+  --paper: #f5f1e9;
+  --paper-line: transparent;
+  --medal-1: #e8b923;
+  --medal-2: #b8bcc4;
+  --medal-3: #c98a56;
+}
+
+/* beige "white mode" — flip the token set, the whole UI follows.
+   Attribute-scoped (not :root-only) so a nested data-theme="dark"
+   island keeps intentionally-dark panels dark inside light mode. */
+[data-theme="light"] {
+  --color-bg: #faf9f6;
+  --color-card: #ffffff;
+  --color-card2: #f1efe9;
+  --color-line: #e6e2d8;
+  --color-ink: #14110e;
+  --color-mute: #635d52;
+  --wash-top: rgba(196, 99, 58, 0.06);
+  --dot: rgba(27, 24, 21, 0.05);
+  --hm-empty: #ece9e1;
+  --hm-base: #faf9f6;
+  --rope: #cfc9bd;
+  --paper: #ffffff;
+  --paper-line: #e6e2d8;
+  --medal-1: #b8860b;
+  --medal-2: #7e8896;
+  --medal-3: #a5652c;
+}
+
+[data-theme="dark"] {
+  --color-bg: #0a0a0a;
+  --color-card: #131313;
+  --color-card2: #1b1b1b;
+  --color-line: #272727;
+  --color-ink: #f1f1ef;
+  --color-mute: #9c9c98;
+  --wash-top: rgba(196, 99, 58, 0.05);
+  --dot: rgba(241, 241, 239, 0.032);
+  --hm-empty: #161616;
+  --hm-base: #0a0a0a;
+  --rope: #2e2e2e;
+  --paper: #f5f1e9;
+  --paper-line: transparent;
+  --medal-1: #e8b923;
+  --medal-2: #b8bcc4;
+  --medal-3: #c98a56;
+}
+
 html {
   background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+/* theme islands re-resolve their text color from their own variable
+   set — inherited color from the page root would otherwise leak in
+   (e.g. dark ink onto a dark panel in light mode) */
+[data-theme] {
   color: var(--color-ink);
 }
 
@@ -25,8 +87,8 @@ body {
      a faint dot grid (echoes the contribution graph) under a barely
      warm wash at the top — visible on wide screens, never loud */
   background-image:
-    linear-gradient(to bottom, rgba(196, 99, 58, 0.05), transparent 340px),
-    radial-gradient(rgba(241, 241, 239, 0.032) 1px, transparent 1px);
+    linear-gradient(to bottom, var(--wash-top), transparent 340px),
+    radial-gradient(var(--dot) 1px, transparent 1px);
   background-size: 100% 100%, 26px 26px;
   background-attachment: fixed, fixed;
 }
@@ -90,10 +152,10 @@ body {
   outline: 1px solid rgba(255, 255, 255, 0.04);
   outline-offset: -1px;
 }
-.hm-0 { background: #161616; }
-.hm-1 { background: color-mix(in srgb, var(--accent, #c4633a) 30%, #0a0a0a); }
-.hm-2 { background: color-mix(in srgb, var(--accent, #c4633a) 55%, #0a0a0a); }
-.hm-3 { background: color-mix(in srgb, var(--accent, #c4633a) 80%, #0a0a0a); }
+.hm-0 { background: var(--hm-empty); }
+.hm-1 { background: color-mix(in srgb, var(--accent, #c4633a) 30%, var(--hm-base)); }
+.hm-2 { background: color-mix(in srgb, var(--accent, #c4633a) 55%, var(--hm-base)); }
+.hm-3 { background: color-mix(in srgb, var(--accent, #c4633a) 80%, var(--hm-base)); }
 .hm-4 { background: var(--accent, #c4633a); }
 
 @keyframes pop {

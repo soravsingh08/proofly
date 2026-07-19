@@ -13,13 +13,13 @@ export const SITE = {
   },
   team: [
     {
-      name: "Vipul Kataria",
+      name: "Sorav Singh",
       title: "Co-founder",
       github: "",
       linkedin: "",
     },
     {
-      name: "Sorav Singh",
+      name: "Vipul Kataria",
       title: "Co-founder",
       github: "",
       linkedin: "",

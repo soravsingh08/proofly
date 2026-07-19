@@ -490,7 +490,7 @@ export default function Landing() {
             >
               <path
                 d="M-20 24 Q600 124 1220 24"
-                stroke="#2e2e2e"
+                stroke="var(--rope)"
                 strokeWidth="2"
                 fill="none"
               />
@@ -522,8 +522,8 @@ export default function Landing() {
                               <span className="w-1.5 h-1.5 rounded-full bg-bg" />
                             </span>
                             {/* white polaroid, photo = the role's graph */}
-                            <div className="bg-[#f5f1e9] rounded-xl p-2 pb-3 shadow-xl shadow-black/40">
-                              <div className="bg-[#131311] rounded-lg p-2.5 overflow-hidden">
+                            <div className="bg-[var(--paper)] border border-[var(--paper-line)] rounded-xl p-2 pb-3 shadow-xl shadow-black/40">
+                              <div data-theme="dark" className="bg-[#131311] rounded-lg p-2.5 overflow-hidden">
                                 <HeroGraph color={role.color} weeks={9} cell={7} />
                               </div>
                               <div className="px-1.5 pt-2.5">
@@ -892,6 +892,7 @@ export default function Landing() {
                 <Link to="/leaderboard" className="block text-ink/80 hover:text-ink transition">Leaderboard</Link>
                 <Link to="/u/arjun" className="block text-ink/80 hover:text-ink transition">Live profile</Link>
                 <Link to="/u/arjun/resume" className="block text-ink/80 hover:text-ink transition">Résumé</Link>
+                <Link to="/about" className="block text-ink/80 hover:text-ink transition">About us</Link>
               </div>
             </div>
             <div>

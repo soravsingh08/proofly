@@ -10,6 +10,11 @@
       rel="stylesheet"
       href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap"
     />
+    <script>
+      // apply saved theme before first paint so there is no flash
+      document.documentElement.dataset.theme =
+        localStorage.getItem("proofly_theme") || "dark";
+    </script>
     <title>Proofly | GitHub for Every Profession</title>
     <meta name="description" content="Build a public proof-of-work profile. Consistency you can't fake." />
     <meta name="theme-color" content="#0a0a0a" />
