@@ -11,6 +11,7 @@ export const ROLES = {
       { key: "bug_fixed", label: "Bugs Fixed", type: "count" },
       { key: "feature", label: "Features Shipped", type: "count" },
       { key: "problem_solved", label: "LeetCode Solved", type: "count" },
+      { key: "code_review", label: "Code Reviews", type: "count" },
     ],
   },
   digital_marketing: {
@@ -21,6 +22,8 @@ export const ROLES = {
       { key: "seo_task", label: "SEO Tasks", type: "count" },
       { key: "blog", label: "Blogs Published", type: "count" },
       { key: "campaign", label: "Campaigns", type: "count" },
+      { key: "social_post", label: "Social Posts", type: "count" },
+      { key: "lead", label: "Leads Generated", type: "count" },
       { key: "traffic", label: "Traffic Driven", type: "count" },
     ],
   },
@@ -32,6 +35,8 @@ export const ROLES = {
       { key: "call", label: "Calls Made", type: "count" },
       { key: "meeting", label: "Meetings", type: "count" },
       { key: "deal", label: "Deals Closed", type: "count" },
+      { key: "followup", label: "Follow-ups", type: "count" },
+      { key: "demo", label: "Demos Given", type: "count" },
       { key: "revenue", label: "Revenue", type: "currency" },
     ],
   },
@@ -43,6 +48,8 @@ export const ROLES = {
       { key: "candidate", label: "Candidates Sourced", type: "count" },
       { key: "interview", label: "Interviews", type: "count" },
       { key: "hire", label: "Hires", type: "count" },
+      { key: "screening", label: "Screenings Done", type: "count" },
+      { key: "offer", label: "Offers Made", type: "count" },
     ],
   },
   meta_ads: {
@@ -53,6 +60,8 @@ export const ROLES = {
     metrics: [
       { key: "leads", label: "Leads Generated", type: "count" },
       { key: "campaign", label: "Campaigns Created", type: "count" },
+      { key: "creative", label: "Ad Creatives", type: "count" },
+      { key: "ab_test", label: "A/B Tests Run", type: "count" },
       { key: "spend", label: "Ad Spend", type: "currency" },
       { key: "roas", label: "ROAS", type: "ratio" },
       { key: "ctr", label: "CTR %", type: "percent" },
@@ -66,6 +75,8 @@ export const ROLES = {
       { key: "design", label: "Designs Delivered", type: "count" },
       { key: "video", label: "Videos Edited", type: "count" },
       { key: "approval", label: "Client Approvals", type: "count" },
+      { key: "concept", label: "Concepts Pitched", type: "count" },
+      { key: "reel", label: "Reels / Shorts Made", type: "count" },
     ],
   },
 };
