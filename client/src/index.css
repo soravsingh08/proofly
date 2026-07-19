@@ -73,6 +73,13 @@ html {
   color: var(--color-ink);
 }
 
+/* nothing may widen the page sideways on any device */
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 /* theme islands re-resolve their text color from their own variable
    set — inherited color from the page root would otherwise leak in
    (e.g. dark ink onto a dark panel in light mode) */
@@ -117,6 +124,12 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .sway { animation: none; }
+}
+
+/* calmer dashboard: card borders fade to half strength so surfaces
+   separate by tone instead of hard boxes */
+.dash-calm .border-line {
+  border-color: color-mix(in srgb, var(--color-line) 55%, transparent);
 }
 
 /* footer heatmap strip — each cell breathes on its own offset,
@@ -213,6 +226,7 @@ body {
 }
 .history-rail::-webkit-scrollbar {
   width: 5px;
+  height: 5px;
 }
 .history-rail::-webkit-scrollbar-thumb {
   background: #272727;
