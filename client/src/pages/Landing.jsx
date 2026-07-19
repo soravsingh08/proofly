@@ -1,10 +1,12 @@
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+import api from "../api/client";
 import { ROLES, ROLE_KEYS } from "../config/roles";
-import { Button, StreakBadge, VerificationBadge } from "../components/ui";
+import { Button, Spinner, StreakBadge, VerificationBadge } from "../components/ui";
 import { Icon } from "../components/icons";
 
 gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin);
@@ -266,6 +268,59 @@ const TOP_STREAKS = [
 
 export default function Landing() {
   const root = useRef(null);
+  const spotBox = useRef(null);
+  const [spotRole, setSpotRole] = useState(null);
+  const [spotRows, setSpotRows] = useState(null);
+
+  // clicking a role card pops up its spotlight — top-2 from that
+  // role's live leaderboard + what counts as proof for it
+  useEffect(() => {
+    if (!spotRole) return;
+    setSpotRows(null);
+    api
+      .get(`/leaderboard?role=${spotRole}`)
+      .then((r) => setSpotRows(r.data.leaderboard.slice(0, 2)))
+      .catch(() => setSpotRows([]));
+  }, [spotRole]);
+
+  // the graph lights up square by square when the popup opens
+  useLayoutEffect(() => {
+    if (!spotRole || !spotBox.current) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".hm-cell",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.4, stagger: { each: 0.0035, from: "random" }, ease: "power1.out" }
+      );
+    }, spotBox);
+    return () => ctx.revert();
+  }, [spotRole]);
+
+  // once rows land: cards rise in and streak numbers count up
+  useLayoutEffect(() => {
+    if (!spotRows || !spotBox.current) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".spot-rise",
+        { y: 16, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, stagger: 0.09, ease: "power3.out" }
+      );
+      gsap.utils.toArray(".spot-streak").forEach((el) => {
+        const obj = { v: 0 };
+        gsap.to(obj, {
+          v: +el.dataset.n,
+          duration: 1,
+          ease: "power2.out",
+          onUpdate: () => {
+            el.textContent = Math.round(obj.v);
+          },
+        });
+      });
+    }, spotBox);
+    return () => ctx.revert();
+  }, [spotRows]);
 
   useLayoutEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -456,7 +511,12 @@ export default function Landing() {
               // outer div: GSAP reveal target — inner div: hover lift,
               // so the two transforms never fight over each other
               return (
-                <div key={k} className="role-card">
+                <button
+                  key={k}
+                  type="button"
+                  onClick={() => setSpotRole(k)}
+                  className="role-card text-left"
+                >
                 <div className="h-full bg-card border border-line rounded-2xl p-5 hover:border-mute/50 hover:-translate-y-1 transition duration-300">
                   <div className="flex items-center gap-2.5 mb-3">
                     <span
@@ -476,10 +536,199 @@ export default function Landing() {
                     {role.metrics.map((m) => m.label).join(" · ")}
                   </p>
                 </div>
-                </div>
+                </button>
               );
             })}
           </div>
+
+          {/* role spotlight — pops up on card click; portaled to body so
+              gsap transforms on ancestors can't break the fixed centering */}
+          {spotRole && createPortal(
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+              onClick={() => setSpotRole(null)}
+            >
+            <div
+              ref={spotBox}
+              className="relative bg-card border rounded-2xl p-6 md:p-7 w-full max-w-2xl max-h-[85vh] overflow-y-auto pop-in"
+              style={{ borderColor: `${ROLES[spotRole].color}40` }}
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+            >
+              {/* role-colored wash behind the header */}
+              <div
+                className="absolute inset-x-0 top-0 h-48 pointer-events-none"
+                style={{
+                  background: `radial-gradient(60% 100% at 50% 0%, ${ROLES[spotRole].color}26, transparent)`,
+                }}
+              />
+              <div className="flex items-start gap-3 mb-5">
+                <span
+                  className="w-10 h-10 rounded-xl border flex items-center justify-center shrink-0"
+                  style={{
+                    borderColor: `${ROLES[spotRole].color}55`,
+                    background: `${ROLES[spotRole].color}1a`,
+                    color: ROLES[spotRole].color,
+                  }}
+                >
+                  <Icon name={ROLES[spotRole].icon} size={18} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold">{ROLES[spotRole].label}</div>
+                  <div className="text-xs text-mute">
+                    Ranked by daily consistency — streaks, not claims.
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSpotRole(null)}
+                  className="text-mute hover:text-ink text-sm px-1"
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* the graph they're signing up to light up */}
+              <div
+                className="flex justify-center mb-5 opacity-80 pointer-events-none"
+                style={{
+                  maskImage: "linear-gradient(to bottom, black 40%, transparent)",
+                  WebkitMaskImage: "linear-gradient(to bottom, black 40%, transparent)",
+                }}
+              >
+                <HeroGraph color={ROLES[spotRole].color} weeks={52} cell={7} />
+              </div>
+
+              <div className="text-[11px] uppercase tracking-[0.3em] text-mute mb-3">
+                Leading right now
+              </div>
+              {spotRows === null ? (
+                <div className="py-6 mb-6">
+                  <Spinner />
+                </div>
+              ) : spotRows.length === 0 ? (
+                <div className="spot-rise bg-card2 border border-line rounded-xl px-4 py-7 text-center mb-6">
+                  <Icon name="trophy" size={20} className="text-mute mb-2" />
+                  <p className="text-sm text-mute">
+                    No one ranked yet — the #1 spot is wide open.
+                  </p>
+                </div>
+              ) : (
+                <div className={`grid gap-3 mb-5 ${spotRows.length > 1 ? "sm:grid-cols-2" : ""}`}>
+                  {spotRows.map((r, i) => {
+                    const medal = ["#e8b923", "#b8bcc4"][i];
+                    return (
+                      <Link
+                        key={r.username}
+                        to={`/u/${r.username}`}
+                        className="spot-rise relative overflow-hidden bg-card2 border rounded-xl hover:-translate-y-0.5 transition"
+                        style={{
+                          borderColor: `${medal}${i === 0 ? "55" : "30"}`,
+                          boxShadow: i === 0 ? "0 10px 40px -14px #e8b92345" : undefined,
+                        }}
+                      >
+                        {/* medal wash from the corner */}
+                        <div
+                          className="absolute inset-0 pointer-events-none"
+                          style={{
+                            background: `radial-gradient(90% 90% at 0% 0%, ${medal}14, transparent)`,
+                          }}
+                        />
+                        <span
+                          className="absolute top-3 right-3 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border"
+                          style={{
+                            color: medal,
+                            borderColor: `${medal}50`,
+                            background: `${medal}14`,
+                          }}
+                        >
+                          <Icon name="trophy" size={10} /> #{i + 1}
+                        </span>
+                        <div className="flex items-center gap-3 p-4">
+                          <div
+                            className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm shrink-0"
+                            style={{
+                              background: `${ROLES[spotRole].color}22`,
+                              color: ROLES[spotRole].color,
+                              boxShadow: i === 0 ? `0 0 0 2px ${medal}55` : undefined,
+                            }}
+                          >
+                            {r.name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase()}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-sm font-semibold truncate">{r.name}</div>
+                            <div className="text-[11px] text-mute truncate">@{r.username}</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between border-t border-line/70 px-4 py-2.5">
+                          <span className="inline-flex items-center gap-1 text-sm font-bold text-orange-400">
+                            <Icon name="flame" size={13} />{" "}
+                            <span className="spot-streak" data-n={r.currentStreak}>
+                              {r.currentStreak}
+                            </span>
+                            <span className="text-[10px] font-normal text-mute ml-0.5">
+                              day streak
+                            </span>
+                          </span>
+                          <span className="text-[10.5px] text-mute">
+                            {r.activeDays} active days
+                          </span>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+
+              <div className="grid sm:grid-cols-[1fr_auto] gap-5 items-center">
+                <div className="spot-rise">
+                  <div className="text-[11px] uppercase tracking-[0.3em] text-mute mb-3">
+                    What counts as proof
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {ROLES[spotRole].metrics.map((m) => (
+                      <span
+                        key={m.key}
+                        className="inline-flex items-center gap-1.5 text-[11px] text-ink border border-line rounded-full px-2.5 py-1"
+                      >
+                        <span
+                          className="w-1.5 h-1.5 rounded-full"
+                          style={{ background: ROLES[spotRole].color }}
+                        />
+                        {m.label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="spot-rise text-center">
+                  <Link
+                    to={`/register?role=${spotRole}`}
+                    onClick={() => localStorage.setItem("proofly_role_intent", spotRole)}
+                    className="block"
+                  >
+                    <Button className="w-full py-2.5">
+                      <Icon name="flame" size={14} /> Join as {ROLES[spotRole].label}
+                    </Button>
+                  </Link>
+                  <p className="text-xs text-mute mt-2.5">
+                    Already on Proofly?{" "}
+                    <Link
+                      to={`/login?role=${spotRole}`}
+                      onClick={() => localStorage.setItem("proofly_role_intent", spotRole)}
+                      className="text-brand hover:underline"
+                    >
+                      Login as {ROLES[spotRole].label}
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            </div>
+            </div>,
+            document.body
+          )}
         </section>
 
         {/* ============ feature: streaks ============ */}

@@ -48,7 +48,7 @@ export default function Navbar() {
             <NavLink to="/leaderboard" className={linkCls}>Leaderboard</NavLink>
             <NavLink to="/connections" className={linkCls}>
               {user.role === "developer"
-                ? "Connect GitHub"
+                ? "Connections"
                 : user.role === "designer"
                 ? "Connect YouTube"
                 : "Connect Sheets"}

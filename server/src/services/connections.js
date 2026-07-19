@@ -9,6 +9,8 @@ import { isValidDateStr } from "./dates.js";
 //                 raises the rate limit from 60 to 5000/hr)
 //   sheet       : a shared/published Google Sheet fetched as CSV
 //   youtube     : the channel's public RSS feed (last ~15 uploads)
+//   leetcode    : the public GraphQL profile endpoint — the
+//                 submission calendar maps each day to a count
 // ============================================================
 
 const GH_HEADERS = { "User-Agent": "proofly", Accept: "application/vnd.github+json" };
@@ -88,6 +90,43 @@ export async function fetchSheetRows(url, role) {
   return byDate;
 }
 
+async function leetcodeQuery(query, variables) {
+  const r = await fetch("https://leetcode.com/graphql", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "User-Agent": "proofly" },
+    body: JSON.stringify({ query, variables }),
+  });
+  if (!r.ok) {
+    const err = new Error("LeetCode is unreachable, try again");
+    err.friendly = true;
+    throw err;
+  }
+  return (await r.json()).data;
+}
+
+export async function leetcodeUserExists(username) {
+  const data = await leetcodeQuery(
+    "query($u:String!){matchedUser(username:$u){username}}",
+    { u: username }
+  );
+  return !!data?.matchedUser;
+}
+
+export async function fetchLeetcodeCalendar(username) {
+  const data = await leetcodeQuery(
+    "query($u:String!){matchedUser(username:$u){userCalendar{submissionCalendar}}}",
+    { u: username }
+  );
+  const byDate = new Map();
+  const raw = data?.matchedUser?.userCalendar?.submissionCalendar;
+  if (!raw) return byDate;
+  for (const [ts, n] of Object.entries(JSON.parse(raw))) {
+    const date = new Date(ts * 1000).toISOString().slice(0, 10);
+    if (n > 0) byDate.set(date, (byDate.get(date) || 0) + n);
+  }
+  return byDate; // "yyyy-mm-dd" -> submissions
+}
+
 export function extractChannelId(input) {
   const m = String(input).match(/(UC[\w-]{22})/);
   return m ? m[1] : null;
@@ -124,6 +163,9 @@ export async function syncConnection(conn, user) {
   } else if (conn.type === "youtube") {
     const uploads = await fetchYoutubeUploads(conn.config.channelId);
     for (const [date, n] of uploads) metricsByDate.set(date, { video: n });
+  } else if (conn.type === "leetcode") {
+    const solved = await fetchLeetcodeCalendar(conn.config.username);
+    for (const [date, n] of solved) metricsByDate.set(date, { problem_solved: n });
   }
 
   const docs = [];

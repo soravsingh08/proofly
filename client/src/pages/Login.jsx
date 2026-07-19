@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import api, { errMsg } from "../api/client";
 import { useAuth } from "../context/AuthContext";
+import { ROLES } from "../config/roles";
 import { Button, Input, PasswordInput } from "../components/ui";
 import AuthLayout from "../components/AuthLayout";
 
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const intent = ROLES[params.get("role")];
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -30,7 +33,7 @@ export default function Login() {
 
   return (
     <AuthLayout
-      title="Welcome back"
+      title={intent ? `Login as ${intent.label}` : "Welcome back"}
       subtitle="Your proof-of-work is waiting."
       footer={
         <>

@@ -6,6 +6,7 @@ import { getRole } from "../config/roles.js";
 import {
   extractChannelId,
   fetchSheetRows,
+  leetcodeUserExists,
   repoExists,
   syncConnection,
 } from "../services/connections.js";
@@ -70,6 +71,18 @@ router.post("/", async (req, res) => {
         return res.status(400).json({ error: "Paste a channel link containing the UC… id" });
       config.channelId = channelId;
       label = `YouTube ${channelId.slice(0, 10)}…`;
+    } else if (type === "leetcode") {
+      if (!getRole(req.user.role).metrics.some((m) => m.key === "problem_solved"))
+        return res.status(400).json({ error: "LeetCode tracking is for developers" });
+      const username = String(req.body.username || "").trim();
+      if (!/^[\w-]{1,30}$/.test(username))
+        return res.status(400).json({ error: "Invalid LeetCode username" });
+      if (await Connection.findOne({ userId: req.user._id, type: "leetcode" }))
+        return res.status(400).json({ error: "LeetCode is already connected" });
+      if (!(await leetcodeUserExists(username)))
+        return res.status(404).json({ error: "No such LeetCode user" });
+      config.username = username;
+      label = `LeetCode @${username}`;
     } else {
       return res.status(400).json({ error: "Unknown connection type" });
     }
