@@ -1,120 +1,135 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import gsap from "gsap";
 import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { ROLES, ROLE_KEYS } from "../config/roles";
-import { Card, Spinner, Empty } from "../components/ui";
+import { AmbientGlow, Card, Spinner, Empty } from "../components/ui";
 import { Icon } from "../components/icons";
 
 const MEDALS = ["#e8b923", "#b8bcc4", "#c98a56"];
+const STREAK_CHIPS = [
+  { label: "Any streak", value: 0 },
+  { label: "7+", value: 7 },
+  { label: "30+", value: 30 },
+  { label: "100+", value: 100 },
+];
 
-const initials = (name) =>
-  name
+function initials(name) {
+  return name
     .split(" ")
-    .slice(0, 2)
     .map((w) => w[0])
+    .slice(0, 2)
     .join("")
     .toUpperCase();
-
-function Avatar({ name, color, size = "w-9 h-9 text-xs" }) {
-  return (
-    <div
-      className={`${size} rounded-full border flex items-center justify-center font-semibold shrink-0`}
-      style={{ color, borderColor: `${color}55`, background: `${color}1a` }}
-    >
-      {initials(name)}
-    </div>
-  );
 }
 
-// Top-3 podium — champion centered and elevated on desktop
-function Podium({ top, color, me }) {
-  const order = ["md:order-2", "md:order-1", "md:order-3"];
-  return (
-    <div className="grid md:grid-cols-3 gap-4 mb-6 items-end">
-      {top.map((r, i) => (
-        <Link
-          key={r.username}
-          to={`/u/${r.username}`}
-          className={`${order[i]} ${i === 0 ? "order-first md:order-2" : ""} group`}
-        >
-          <div
-            className={`relative bg-card border rounded-2xl p-5 text-center transition group-hover:border-mute/50 ${
-              me === r.username ? "border-brand/60" : "border-line"
-            } ${i === 0 ? "md:pb-8 shadow-2xl shadow-black/40" : ""}`}
-          >
-            <div
-              className="absolute inset-x-0 top-0 h-[2px] rounded-t-2xl"
-              style={{
-                background: `linear-gradient(90deg, transparent, ${MEDALS[i]}, transparent)`,
-              }}
-            />
-            <div className="flex justify-center mb-3">
-              <Icon name="trophy" size={i === 0 ? 20 : 15} style={{ color: MEDALS[i] }} />
-            </div>
-            <div className="flex justify-center mb-3">
-              <Avatar
-                name={r.name}
-                color={color}
-                size={i === 0 ? "w-14 h-14 text-base" : "w-11 h-11 text-sm"}
-              />
-            </div>
-            <div className="font-semibold text-sm truncate">{r.name}</div>
-            <div className="text-xs text-mute truncate">@{r.username}</div>
-            <div className="mt-3 inline-flex items-center gap-1.5 text-orange-400 font-semibold">
-              <Icon name="flame" size={14} />
-              {r.currentStreak}
-              <span className="text-[10px] font-normal text-mute">day streak</span>
-            </div>
-            <div className="text-[11px] text-mute mt-1.5">
-              {r.activeDays} active days · longest {r.longestStreak}
-            </div>
-          </div>
-        </Link>
-      ))}
-    </div>
-  );
-}
-
-// Per-role only, streak-ranked — "we rank consistency, not claims"
+// Per-role, streak-ranked — "we rank consistency, not claims".
+// Search + streak filters run on the backend (/public/search).
 export default function Leaderboard() {
   const { user } = useAuth();
   const [role, setRole] = useState(user?.role || "developer");
   const [rows, setRows] = useState(null);
+  const [q, setQ] = useState("");
+  const [minStreak, setMinStreak] = useState(0);
+  const rootRef = useRef(null);
+  const listRef = useRef(null);
+  const searching = q.trim() !== "" || minStreak > 0;
 
   useEffect(() => {
     setRows(null);
-    api
-      .get(`/leaderboard?role=${role}`)
-      .then((r) => setRows(r.data.leaderboard))
-      .catch(() => setRows([]));
-  }, [role]);
+    const ep = searching
+      ? `/public/search?role=${role}&q=${encodeURIComponent(q.trim())}&minStreak=${minStreak}`
+      : `/leaderboard?role=${role}`;
+    // small debounce so typing doesn't spam the API
+    const t = setTimeout(
+      () =>
+        api
+          .get(ep)
+          .then((r) => setRows(r.data.leaderboard || r.data.results))
+          .catch(() => setRows([])),
+      q.trim() ? 300 : 0
+    );
+    return () => clearTimeout(t);
+  }, [role, q, minStreak, searching]);
 
-  const color = ROLES[role].color;
-  const top = rows?.slice(0, 3) || [];
-  const rest = rows?.slice(3) || [];
+  useLayoutEffect(() => {
+    if (!rootRef.current) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        "[data-rise]",
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.55, stagger: 0.08, ease: "power3.out" }
+      );
+    }, rootRef);
+    return () => ctx.revert();
+  }, []);
+
+  // rows slide in on every role/filter switch — the dynamic feel
+  useLayoutEffect(() => {
+    if (!rows || !listRef.current) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".lb-item",
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.4, stagger: 0.04, ease: "power2.out" }
+      );
+    }, listRef);
+    return () => ctx.revert();
+  }, [rows]);
+
+  const activeRole = ROLES[role];
+  const podium = !searching && rows && rows.length >= 3 ? rows.slice(0, 3) : null;
+  const listRows = podium ? rows.slice(3) : rows || [];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-1">Leaderboard</h1>
-      <p className="text-sm text-mute mb-6">
-        Ranked by consistency. You can't fake showing up every day.
-      </p>
+    <div ref={rootRef} className="relative max-w-3xl mx-auto px-4 py-8">
+      <AmbientGlow />
+      <div data-rise>
+        <h1 className="text-2xl font-bold mb-1">Leaderboard</h1>
+        <p className="text-sm text-mute mb-6">
+          Ranked by consistency. You can't fake showing up every day.
+        </p>
+      </div>
 
       {/* role tabs */}
-      <div className="flex flex-wrap gap-2 mb-8">
+      <div data-rise className="flex flex-wrap gap-2 mb-4">
         {ROLE_KEYS.map((k) => (
           <button
             key={k}
             onClick={() => setRole(k)}
             className={`inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition ${
-              role === k
-                ? "text-black font-semibold"
-                : "border-line text-mute hover:text-ink"
+              role === k ? "text-black font-semibold" : "border-line text-mute hover:text-ink"
             }`}
             style={role === k ? { background: ROLES[k].color, borderColor: ROLES[k].color } : {}}
           >
             <Icon name={ROLES[k].icon} size={12} /> {ROLES[k].label}
+          </button>
+        ))}
+      </div>
+
+      {/* search + streak filter — backend powered */}
+      <div data-rise className="flex flex-wrap items-center gap-2 mb-6">
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder={`Search ${activeRole.label.toLowerCase()}s by name…`}
+          className="flex-1 min-w-[200px] bg-card border border-line rounded-lg px-3 py-2 text-sm outline-none focus:border-brand transition"
+        />
+        {STREAK_CHIPS.map((c) => (
+          <button
+            key={c.value}
+            onClick={() => setMinStreak(c.value)}
+            className={`text-[11px] rounded-full px-2.5 py-1.5 border transition inline-flex items-center gap-1 ${
+              minStreak === c.value
+                ? "border-brand text-brand bg-brand/10"
+                : "border-line text-mute hover:text-ink"
+            }`}
+          >
+            {c.value > 0 && <Icon name="flame" size={10} />}
+            {c.label}
           </button>
         ))}
       </div>
@@ -124,69 +139,108 @@ export default function Leaderboard() {
       ) : rows.length === 0 ? (
         <Empty
           icon="trophy"
-          title="No one here yet"
-          hint="Claim the #1 spot. Start logging your work."
+          title={searching ? "No one matches" : "No one here yet"}
+          hint={
+            searching
+              ? "Try a different name or a lower streak filter."
+              : "Claim the #1 spot. Start logging your work."
+          }
         />
       ) : (
-        <>
-          <Podium top={top} color={color} me={user?.username} />
-
-          {rest.length > 0 && (
-            <Card className="p-0 overflow-hidden">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-xs text-mute border-b border-line">
-                    <th className="text-left font-medium px-4 py-3">#</th>
-                    <th className="text-left font-medium px-4 py-3">Professional</th>
-                    <th className="text-right font-medium px-4 py-3">
-                      <span className="inline-flex items-center gap-1">
-                        <Icon name="flame" size={11} className="text-orange-400" /> Streak
-                      </span>
-                    </th>
-                    <th className="text-right font-medium px-4 py-3">Active days</th>
-                    <th className="text-right font-medium px-4 py-3 hidden sm:table-cell">Longest</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rest.map((r, i) => (
-                    <tr
-                      key={r.username}
-                      className={`border-b border-line last:border-0 hover:bg-card2 transition ${
-                        user?.username === r.username ? "bg-card2" : ""
+        <div ref={listRef}>
+          {/* top-3 podium */}
+          {podium && (
+            <div className="grid grid-cols-3 gap-3 mb-4 items-end">
+              {[podium[1], podium[0], podium[2]].map((r, gi) => {
+                const rank = gi === 1 ? 0 : gi === 0 ? 1 : 2;
+                const first = rank === 0;
+                return (
+                  <Link
+                    key={r.username}
+                    to={`/u/${r.username}`}
+                    className={`lb-item block text-center bg-card border rounded-2xl px-3 hover:-translate-y-1 transition ${
+                      first ? "py-6" : "py-4"
+                    }`}
+                    style={{ borderColor: `${MEDALS[rank]}45` }}
+                  >
+                    <Icon name="trophy" size={first ? 20 : 15} style={{ color: MEDALS[rank] }} />
+                    <div
+                      className={`mx-auto rounded-full flex items-center justify-center font-bold my-2 ${
+                        first ? "w-14 h-14 text-lg" : "w-11 h-11 text-sm"
+                      }`}
+                      style={{ background: `${activeRole.color}22`, color: activeRole.color }}
+                    >
+                      {initials(r.name)}
+                    </div>
+                    <div className={`font-semibold truncate ${first ? "text-base" : "text-sm"}`}>
+                      {r.name}
+                    </div>
+                    <div className="text-[11px] text-mute truncate mb-2">@{r.username}</div>
+                    <div
+                      className={`inline-flex items-center gap-1 font-bold text-orange-400 ${
+                        first ? "text-xl" : "text-base"
                       }`}
                     >
-                      <td className="px-4 py-3 w-10 text-mute">{i + 4}</td>
-                      <td className="px-4 py-3">
-                        <Link
-                          to={`/u/${r.username}`}
-                          className="flex items-center gap-3 hover:underline"
-                        >
-                          <Avatar name={r.name} color={color} />
-                          <span className="min-w-0">
-                            <span className="font-medium">{r.name}</span>{" "}
-                            <span className="text-mute text-xs">@{r.username}</span>
-                            {r.headline && (
-                              <span className="block text-xs text-mute line-clamp-1 no-underline">
-                                {r.headline}
-                              </span>
-                            )}
+                      <Icon name="flame" size={first ? 16 : 13} /> {r.currentStreak}
+                    </div>
+                    <div className="text-[10.5px] text-mute mt-1">
+                      {r.activeDays} active days
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+
+          {/* the rest */}
+          {listRows.length > 0 && (
+            <Card className="p-0 overflow-hidden">
+              {listRows.map((r, i) => {
+                const rank = (podium ? 3 : 0) + i + 1;
+                const isYou = user?.username === r.username;
+                return (
+                  <Link
+                    key={r.username}
+                    to={`/u/${r.username}`}
+                    className={`lb-item flex items-center gap-3 px-4 py-3 border-b border-line last:border-0 hover:bg-card2 transition ${
+                      isYou ? "bg-brand/5" : ""
+                    }`}
+                  >
+                    <span className="w-6 text-xs text-mute text-center shrink-0">{rank}</span>
+                    <span
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0"
+                      style={{ background: `${activeRole.color}1c`, color: activeRole.color }}
+                    >
+                      {initials(r.name)}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="text-sm font-medium">
+                        {r.name}
+                        {isYou && (
+                          <span className="ml-2 text-[10px] text-brand border border-brand/40 rounded-full px-1.5 py-0.5">
+                            you
                           </span>
-                        </Link>
-                      </td>
-                      <td className="px-4 py-3 text-right font-semibold text-orange-400">
-                        {r.currentStreak}
-                      </td>
-                      <td className="px-4 py-3 text-right">{r.activeDays}</td>
-                      <td className="px-4 py-3 text-right text-mute hidden sm:table-cell">
-                        {r.longestStreak}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        )}
+                      </span>
+                      <span className="block text-[11px] text-mute truncate">
+                        @{r.username}
+                        {r.headline ? ` · ${r.headline}` : ""}
+                      </span>
+                    </span>
+                    <span className="text-right shrink-0">
+                      <span className="inline-flex items-center gap-1 text-sm font-bold text-orange-400">
+                        <Icon name="flame" size={12} /> {r.currentStreak}
+                      </span>
+                      <span className="block text-[10.5px] text-mute">
+                        {r.activeDays} days · best {r.longestStreak}
+                      </span>
+                    </span>
+                  </Link>
+                );
+              })}
             </Card>
           )}
-        </>
+        </div>
       )}
     </div>
   );

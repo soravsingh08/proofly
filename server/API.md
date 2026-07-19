@@ -98,9 +98,10 @@ Duolingo-style insurance: a freeze covers ONE missed day so it doesn't break the
   `verification: "evidence"` — show the 📎 badge. Without it: `self_reported`.
 - 201 → `{ contribution }` · 400 with message if date/metrics invalid.
 
-### `GET /contributions?limit=30` (max 100)
-`{ contributions: [...] }` newest first. Each has `date, metrics, weightedTotal, note,
-verification, source, evidenceUrl`.
+### `GET /contributions?limit=30&date=2026-07-18` (limit max 100, date optional)
+`{ contributions: [...] }` newest first. `date` filters to a single day — used by the
+dashboard's Today/Yesterday/pick-a-date filter. Each entry has `date, metrics, weightedTotal,
+note, verification, source, evidenceUrl`.
 
 ### `PUT /contributions/:id/evidence`
 Body: `{ evidenceUrl }` — attach proof later. Upgrades `self_reported → evidence`
@@ -157,13 +158,38 @@ Weekly targets per metric, progress resets every **Monday**.
 
 ## GitHub integration — auth+role, **developer role only** (others get 403)
 
-- `PUT /integrations/github` body `{ username }` — validates the account exists on GitHub. 404 if not.
-- `POST /integrations/github/sync` → `{ synced: 12 }` — pulls ~90 days of public commits/PRs,
-  saves them as `verification: "imported"`, `source: "github_sync"`. Idempotent — safe to call repeatedly.
-- `DELETE /integrations/github` — disconnects **and deletes** all github-synced entries.
-- A daily 03:00 server job re-syncs every connected user automatically.
-- UI: connect input + "Sync now" button + "Disconnect" with a warning that synced history is removed.
-- `user.githubUsername` (from `/auth/me`) tells you the connected state.
+GitHub syncing is **repo-based** — repos are added via `POST /connections { type: "github_repo" }`
+(see Connections above). The username here is only the **author filter**: in a shared repo,
+only commits authored by this username count.
+
+- `PUT /integrations/github` body `{ username }` — validates the account exists (404 if not),
+  saves it, and **re-syncs every connected repo** with the new filter →
+  `{ githubUsername, resynced }`.
+- `DELETE /integrations/github` — clears the username + removes legacy `github_sync` entries.
+- `user.githubUsername` (from `/auth/me`) tells you the current filter.
+- (The old profile-events sync — `POST /integrations/github/sync` — is retired; repos via
+  Connections replaced it.)
+
+---
+
+## Connections — auth+role (the "connect once, we track daily" system)
+
+Free auto-sync sources. Every synced entry is `verification: "imported"`, `source: "connection"`,
+tagged with its connection id — re-sync and disconnect replace/remove exactly their own rows.
+A daily 03:30 job re-syncs everything automatically.
+
+- `GET /connections` → `{ connections: [{ _id, type, label, lastSyncAt, lastSynced }] }`
+- `POST /connections` — body per type, syncs immediately, returns `{ connection, synced }`:
+  - `{ type: "github_repo", repo: "owner/name" }` — public repos only; commits counted daily
+    (filtered by the user's connected `githubUsername` when set)
+  - `{ type: "sheet", url: "<google sheet link>" }` — sheet must be link-shared or published;
+    columns: `date` + metric labels/keys (validated at connect time)
+  - `{ type: "youtube", url: "<link with UC… channel id>" }` — roles with a `video` metric only
+- `POST /connections/:id/sync` → `{ synced }` — manual refresh
+- `DELETE /connections/:id` — disconnect + remove its synced entries
+- `GET /connections/sheet-template` → CSV download with the right columns for the user's role
+- Max 10 connections per user. Friendly 400 errors on bad repo/sheet/channel.
+- Optional env: `GITHUB_TOKEN` raises the GitHub rate limit 60 → 5000 req/hr.
 
 ---
 
