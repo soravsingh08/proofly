@@ -104,7 +104,7 @@ export default function Dashboard() {
     : 0;
 
   return (
-    <div ref={rootRef} className="relative max-w-5xl mx-auto px-4 py-8 space-y-4">
+    <div ref={rootRef} className="relative max-w-7xl mx-auto px-4 py-8 space-y-4">
       <AmbientGlow />
       {/* greeting + nudge */}
       <div data-rise className="flex flex-wrap items-center justify-between gap-4">
@@ -156,6 +156,10 @@ export default function Dashboard() {
         </Card>
       </div>
 
+      {/* wide two-column app layout: main content + side rail, so the
+          page spreads horizontally instead of one long scroll */}
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px] items-start">
+      <div className="space-y-4 min-w-0">
       {/* heatmap — with a year filter built from the user's own data */}
       <Card data-rise>
         <div className="flex items-center justify-between gap-3 flex-wrap mb-4">
@@ -200,9 +204,7 @@ export default function Dashboard() {
         <GoalsCard data-rise goals={goals} role={role} refresh={load} />
       </div>
 
-      {/* recent + achievements/integrations — the right stack sets the
-          height, recent entries fills it and scrolls inside */}
-      <div className="grid md:grid-cols-[1.5fr_1fr] gap-3">
+        {/* recent entries fill the main column and scroll inside */}
         <div data-rise className="relative min-h-[420px]">
           <RecentCard
             recent={recent}
@@ -212,6 +214,9 @@ export default function Dashboard() {
             onFilter={setDateFilter}
           />
         </div>
+        </div>
+
+        {/* side rail */}
         <div data-rise className="space-y-3">
           <Card>
             <h2 className="font-semibold text-sm mb-3">Achievements</h2>

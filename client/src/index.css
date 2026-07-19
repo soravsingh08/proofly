@@ -99,17 +99,17 @@ body {
 }
 .glow-a {
   width: 620px; height: 620px; left: -160px; top: -200px;
-  background: radial-gradient(circle, rgba(196, 99, 58, 0.16) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(196, 99, 58, 0.07) 0%, transparent 65%);
   animation: driftA 22s ease-in-out infinite alternate;
 }
 .glow-b {
   width: 500px; height: 500px; right: -140px; top: 28%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.055) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.025) 0%, transparent 65%);
   animation: driftB 28s ease-in-out infinite alternate;
 }
 .glow-c {
   width: 540px; height: 540px; left: 32%; bottom: -240px;
-  background: radial-gradient(circle, rgba(196, 99, 58, 0.1) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(196, 99, 58, 0.045) 0%, transparent 65%);
   animation: driftC 26s ease-in-out infinite alternate;
 }
 @keyframes driftA {
